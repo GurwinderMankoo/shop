@@ -1,5 +1,6 @@
 import { ProductCard } from "@/components/shared/products/ProductCard";
 import { getProducts } from "@/lib/queries/products";
+import Link from "next/link";
 
 export default async function ProductsPage() {
 
@@ -16,8 +17,9 @@ export default async function ProductsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
         {products.map((product) => (
-
-            <ProductCard {...product} key={product.id}/>
+          <Link href={`/products/${product.id}`} key={product.id}>
+            <ProductCard {...product} />
+          </Link>
 
         ))}
 

@@ -40,6 +40,7 @@ CREATE TABLE "ProductVariant" (
     "name" TEXT NOT NULL,
     "sku" TEXT NOT NULL,
     "price" REAL NOT NULL,
+    "comparePrice" REAL,
     "stock" INTEGER NOT NULL DEFAULT 0,
     "productId" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

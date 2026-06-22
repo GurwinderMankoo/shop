@@ -67,11 +67,12 @@ model ProductImage {
 // PRODUCT--Variants
 // =====================
 model ProductVariant {
-  id    String @id @default(cuid())
-  name  String //Example: "Black - Large"
-  sku   String @unique
-  price Float
-  stock Int    @default(0)
+  id           String @id @default(cuid())
+  name         String //Example: "Black - Large"
+  sku          String @unique
+  price        Float
+  comparePrice Float?
+  stock        Int    @default(0)
 
   productId String
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
