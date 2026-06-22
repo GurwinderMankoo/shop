@@ -1,6 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+
+// https://images.unsplash.com/photo-1483985988355-763728e1935b
 
 export function HeroSection() {
   return (
@@ -43,8 +46,14 @@ export function HeroSection() {
             </div>
           </div>
 
-          <div>
-            <div className="aspect-square rounded-3xl bg-muted" />
+          <div className="relative h-[400px] overflow-hidden rounded-3xl lg:h-[600px]">
+            <Image
+              src="https://images.unsplash.com/photo-1483985988355-763728e1935b"
+              alt="Hero Banner"
+              fill
+              priority
+              className="object-cover"
+            />
           </div>
         </div>
       </div>
