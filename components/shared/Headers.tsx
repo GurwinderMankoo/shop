@@ -18,7 +18,7 @@ export default function Headers({ title, description }: HeaderProps) {
                 {title}
             </h1>
 
-            <p className="mt-3 max-w-xl text-muted-foreground">
+            <p className="mt-3 max-w-3xl text-muted-foreground">
                 {description}
             </p>
         </div>

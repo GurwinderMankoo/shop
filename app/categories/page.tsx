@@ -14,7 +14,7 @@ export default async function CategoriesPage() {
 
             <Headers
                 title="Categories"
-                description="Shop by category"
+                description="Explore a wide range of categories, from electronics and fashion to home essentials, beauty, and fitness. Find exactly what you're looking for in one place."
             />
 
 
