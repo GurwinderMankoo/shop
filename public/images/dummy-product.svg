@@ -1,0 +1,57 @@
+<svg
+  width="600"
+  height="600"
+  viewBox="0 0 600 600"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+
+<rect
+  width="600"
+  height="600"
+  rx="40"
+  fill="#F4F4F5"
+/>
+
+<path
+  d="M220 250V210C220 165 255 130 300 130C345 130 380 165 380 210V250"
+  stroke="#71717A"
+  stroke-width="24"
+  stroke-linecap="round"
+/>
+
+<rect
+  x="170"
+  y="230"
+  width="260"
+  height="220"
+  rx="24"
+  fill="#E4E4E7"
+/>
+
+<circle
+  cx="300"
+  cy="320"
+  r="45"
+  fill="#A1A1AA"
+/>
+
+<path
+  d="M250 390C270 360 330 360 350 390"
+  stroke="#71717A"
+  stroke-width="18"
+  stroke-linecap="round"
+/>
+
+<text
+  x="300"
+  y="510"
+  text-anchor="middle"
+  fill="#52525B"
+  font-size="32"
+  font-family="Arial"
+>
+Product Image
+</text>
+
+</svg>

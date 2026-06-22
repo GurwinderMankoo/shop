@@ -1,11 +1,9 @@
+import { ProductCard } from "@/components/shared/products/ProductCard";
 import { getProducts } from "@/lib/queries/products";
-import Image from "next/image";
-import ProductCard from "./_components/ProductCard";
 
 export default async function ProductsPage() {
 
   const products = await getProducts();
-
 
   return (
     <div className="container mx-auto py-10">

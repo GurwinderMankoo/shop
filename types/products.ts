@@ -34,6 +34,17 @@ export type Product = {
 
   variants: ProductVariant[];
 
+  category?: Partial<Category> | null;
+
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type Category = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  imageUrl: string | null;
+  products: Product[];
+}
