@@ -10,7 +10,7 @@
 !.yarn/releases
 !.yarn/versions
 structure.md
-dataStructure
+dataStructure.ts
 
 # testing
 /coverage
