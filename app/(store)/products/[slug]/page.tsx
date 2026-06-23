@@ -12,6 +12,8 @@ import {
 import Headers from "@/components/shared/Headers";
 import { getProduct } from "@/lib/queries/products";
 import { formatCurrency } from "@/lib/helper";
+import DiscountBadge from "@/components/shared/DiscountBadge";
+import ProductGallery from "../_components/ProductGallery";
 
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }>; }) {
@@ -28,32 +30,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
                 {/* Gallery */}
 
-                <div className="space-y-4">
-                    <div className="relative aspect-square overflow-hidden rounded-xl border">
-                        <Image
-                            src={product?.imageUrl || "/images/product-placeholder.svg"}
-                            alt={product?.name || ""}
-                            fill
-                            className="object-cover"
-                        />
-                    </div>
-
-                    <div className="grid grid-cols-4 gap-4">
-                        {product?.images.map((img) => (
-                            <div
-                                key={img.id}
-                                className="relative aspect-square overflow-hidden rounded-lg border"
-                            >
-                                <Image
-                                    src={img.url}
-                                    alt={img.altText || ""}
-                                    fill
-                                    className="object-cover"
-                                />
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                <ProductGallery images={product?.images || []} />
 
                 {/* Product Info */}
 
@@ -86,6 +63,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                                 formatCurrency(product?.variants[0].comparePrice || 0)
                             }
                         </span>
+                        {
+                            DiscountBadge({
+                                price: product?.variants[0].price || 0,
+                                comparePrice: product?.variants[0].comparePrice || 0
+                            })
+                        }
                     </div>
 
                     {/* Variants */}
@@ -127,14 +110,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                             type="number"
                             defaultValue={1}
                             min={1}
-                            className="
-                h-10
-                w-24
-                rounded-md
-                border
-                px-3
-              "
-                        />
+                            className="h-10 w-24 rounded-md border px-3" />
                     </div>
 
                     {/* Actions */}
@@ -170,12 +146,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 </h2>
 
                 <p className="mt-4 max-w-3xl text-muted-foreground">
-                    Experience exceptional sound quality
-                    with our premium wireless headphones.
-                    Designed for comfort and performance,
-                    they feature active noise cancellation,
-                    long battery life, and a lightweight
-                    design perfect for daily use.
+                    {product?.description}
                 </p>
             </section>
 

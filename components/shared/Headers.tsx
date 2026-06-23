@@ -9,8 +9,6 @@ type HeaderProps = {
 
 export default function Headers({ title, description, name }: HeaderProps) {
 
-
-
     return (
         <div className="mb-12">
             <Breadcrumb name={name} />
