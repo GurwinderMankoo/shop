@@ -1,33 +1,36 @@
 import { Card } from '@/components/ui/card'
 import { Category } from '@prisma/client'
 import Image from 'next/image'
+import Link from 'next/link'
 
-export default function CategoryCard({ imageUrl, name }: Partial<Category>) {
+export default function CategoryCard({ imageUrl, name, slug }: Partial<Category>) {
     return (
         <Card
-            // className="group cursor-pointer p-8 transition hover:shadow-lg"
-            className="group cursor-pointer p-4 overflow-hidden transition-shadow hover:shadow-xl"
+            className="group cursor-pointer overflow-hidden p-4 transition-shadow hover:shadow-xl"
         >
-            <div className="relative aspect-square overflow-hidden">
-                <Image
-                    src={
-                        imageUrl ||
-                        "/images/category-placeholder.svg"
-                    }
-                    alt={name || ''}
-                    fill
-                    className="
-                  object-cover
-                  transition-transform
-                  duration-300
-                  group-hover:scale-105
-                "
-                />
-            </div>
+            <Link
+                href={`/products?category=${slug}&page=1`}
+                className="block"
+            >
 
-            <h3 className="mt-4 font-semibold">
-                {name}
-            </h3>
+                <div className="relative aspect-square overflow-hidden rounded-md">
+                    <Image
+                        src={
+                            imageUrl ||
+                            "/images/category-placeholder.svg"
+                        }
+                        alt={name || ""}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                </div>
+
+
+                <h3 className="mt-4 font-semibold">
+                    {name}
+                </h3>
+
+            </Link>
         </Card>
     )
 }

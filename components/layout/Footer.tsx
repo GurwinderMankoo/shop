@@ -4,7 +4,7 @@ export function Footer() {
   return (
     <footer className="border-t bg-muted/30">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid gap-10 md:grid-cols-4">
+        <div className="grid gap-10 lg:grid-cols-[1.5fr_0.7fr_0.7fr_1fr] md:grid-cols-2 ">
           <div>
             <h3 className="mb-4 text-lg font-semibold">
               ShopSphere
@@ -45,10 +45,10 @@ export function Footer() {
             <div className="flex gap-2">
               <input
                 placeholder="Email address"
-                className="h-10 flex-1 rounded-md border px-3"
+                className="h-10 flex-1 min-w-0 rounded-md border px-3"
               />
 
-              <button className="rounded-md bg-black px-4 text-white">
+              <button className="shirink-0 rounded-md bg-black px-4 text-white">
                 Join
               </button>
             </div>

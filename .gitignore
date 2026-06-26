@@ -9,7 +9,8 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-.structure.md
+structure.md
+dataStructure.ts
 
 # testing
 /coverage
