@@ -17,6 +17,7 @@ export type ProductVariant = {
   name: string;
   sku: string;
   price: number;
+  comparePrice?: number | null;
   stock: number;
 
   options?: VariantOption[];

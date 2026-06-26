@@ -544,6 +544,10 @@ async function main() {
         imageUrl: product.imageUrl,
         description: product.description,
 
+        isActive: true,
+
+        minPrice: Math.min(...product.variants.map((variant) => variant.price)),
+
         categoryId: product.categoryId,
 
         images: {

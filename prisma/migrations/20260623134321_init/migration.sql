@@ -6,6 +6,7 @@ CREATE TABLE "Product" (
     "imageUrl" TEXT,
     "slug" TEXT NOT NULL,
     "isActive" BOOLEAN NOT NULL DEFAULT false,
+    "minPrice" DECIMAL,
     "categoryId" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,

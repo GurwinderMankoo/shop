@@ -5,11 +5,12 @@ import { useState } from "react";
 import {
   Heart,
   Menu,
-  Search,
   ShoppingCart,
-  User,
   X,
 } from "lucide-react";
+import ProductSearch from "../shared/ProductSearch";
+import UserMenu from "./UserMenu";
+import UserMenuMobile from "./UserMenuMobile";
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -35,19 +36,10 @@ export function Navbar() {
           </nav>
 
           {/* Search */}
-          <div className="hidden max-w-md flex-1 px-8 lg:flex">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-
-              <input
-                placeholder="Search products..."
-                className="h-10 w-full rounded-md border pl-10 pr-4 outline-none focus:ring-2 focus:ring-black"
-              />
-            </div>
-          </div>
+          <ProductSearch />
 
           {/* Actions */}
-          <div className="hidden items-center gap-4 md:flex">
+          <div className="hidden items-center gap-4 md:flex shrink-0">
             <button>
               <Heart className="h-5 w-5" />
             </button>
@@ -60,9 +52,7 @@ export function Navbar() {
               </span>
             </button>
 
-            <button>
-              <User className="h-5 w-5" />
-            </button>
+            <UserMenu />
           </div>
 
           {/* Mobile Buttons */}
@@ -104,24 +94,15 @@ export function Navbar() {
             </div>
 
             <div className="p-4">
-              <div className="relative mb-6">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
 
-                <input
-                  placeholder="Search..."
-                  className="h-10 w-full rounded-md border pl-10 pr-4"
-                />
-              </div>
-
-              <nav className="flex flex-col gap-4">
+              <UserMenuMobile>
                 <Link href="/">Home</Link>
-                <Link href="/shop">Shop</Link>
+                <Link href="/products">Products</Link>
                 <Link href="/categories">Categories</Link>
                 <Link href="/deals">Deals</Link>
                 <Link href="/contact">Contact</Link>
                 <Link href="/wishlist">Wishlist</Link>
-                <Link href="/profile">Profile</Link>
-              </nav>
+              </UserMenuMobile >
             </div>
           </div>
         </>
