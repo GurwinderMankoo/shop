@@ -16,11 +16,12 @@ type User = {
     lastName: string;
     role: string
 };
+type UserUpdates = Partial<Omit<User, "id" | "email" | "role">>;
 
 type UserState = {
     user: User | null;
     logout: () => Promise<void>,
-    updateUser: (user: User) => void
+    updateUser: (user: Partial<UserUpdates>) => void
 };
 
 const intialState: UserState = {
@@ -43,8 +44,16 @@ const AuthProvider = ({ userState, children }: AuthProviderProps) => {
         router.refresh()
     }, [])
 
-    const updateUser = useCallback((user: User | null) => {
-        setUser(user)
+    const updateUser = useCallback((updates: Partial<UserUpdates>) => {
+        setUser((prev) => {
+            if (!prev) {
+                return updates as User;
+            }
+            return {
+                ...prev,
+                ...updates
+            }
+        })
     }, [])
 
     return (

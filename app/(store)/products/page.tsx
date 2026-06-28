@@ -6,6 +6,7 @@ import { getCategories } from "@/lib/queries/categories";
 import { ProductCard } from "./_components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { SearchX } from "lucide-react";
+import { getWishlist } from "@/lib/queries/getWishlist";
 
 type ProductPageProps = {
   searchParams: Promise<{
@@ -29,7 +30,7 @@ export default async function ProductsPage({ searchParams }: ProductPageProps) {
   const maxPrice = params.maxPrice ? Number(params.maxPrice) : undefined;
   const search = params.q;
 
-  const [categories, productData] = await Promise.all([
+  const [categories, productData, wishlist] = await Promise.all([
     getCategories(),
     getProducts({
       page,
@@ -40,9 +41,12 @@ export default async function ProductsPage({ searchParams }: ProductPageProps) {
       maxPrice,
       search
     }),
+    getWishlist()
   ])
 
   const { products, pagination } = productData
+
+  const wishlistSets = new Set(wishlist.map((item) => item.productId));
 
   return (
     <div className="container mx-auto py-10">
@@ -60,7 +64,7 @@ export default async function ProductsPage({ searchParams }: ProductPageProps) {
                 href={`/products/${product.id}`}
                 key={product.id}
               >
-                <ProductCard {...product} />
+                <ProductCard {...product} isWishListed={wishlistSets.has(product.id) || false} />
               </Link>
             ))}
           </div>

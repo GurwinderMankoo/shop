@@ -7,6 +7,7 @@ import { verifyEmail } from "../actions/verifyEmail";
 type VerifyEmailPageProps = {
     searchParams: Promise<{
         token?: string;
+        isUpdateEmail?: string
     }>;
 };
 
@@ -14,7 +15,7 @@ export default async function VerifyEmailPage({
     searchParams,
 }: VerifyEmailPageProps) {
 
-    const { token } = await searchParams;
+    const { token, isUpdateEmail } = await searchParams;
 
     if (!token) {
         return null
@@ -42,12 +43,12 @@ export default async function VerifyEmailPage({
                                 Your email address has been verified successfully.
                             </p>
 
-                            <Link
+                            {!isUpdateEmail && <Link
                                 href="/sign-in"
                                 className="mt-6 rounded-md bg-primary px-4 py-2 text-primary-foreground"
                             >
                                 Sign In
-                            </Link>
+                            </Link>}
                         </>
                     ) : (
                         <>

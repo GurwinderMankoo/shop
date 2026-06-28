@@ -41,7 +41,9 @@ export function Navbar() {
           {/* Actions */}
           <div className="hidden items-center gap-4 md:flex shrink-0">
             <button>
-              <Heart className="h-5 w-5" />
+              <Link href="/wishlist">
+                <Heart className="h-5 w-5" />
+              </Link>
             </button>
 
             <button className="relative">

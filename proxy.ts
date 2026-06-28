@@ -10,7 +10,7 @@ export function proxy(request: NextRequest) {
 
     const isAuthRoute = authRoutes.includes(pathname);
 
-    if ((pathname.startsWith('/account') || pathname.startsWith('/admin')) && !session) {
+    if ((pathname.startsWith('/account') || pathname.startsWith('/admin') || pathname === "/wishlist") && !session) {
         const loginUrl = new URL("/sign-in", request.url);
 
         loginUrl.searchParams.set(
@@ -34,5 +34,10 @@ export const config = {
         "/admin/:path*",
         "/sign-in",
         "/sign-up",
+        "/verify-email",
+        "/reset-password",
+        "/update-password",
+        "/checkout",
+        "/wishlist",
     ],
 };

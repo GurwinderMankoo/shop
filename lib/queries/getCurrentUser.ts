@@ -46,6 +46,8 @@ export async function getCurrentUser() {
         lastName: session.user.lastName,
         role: session.user.role,
         createdAt: session.user.createdAt,
-        emailVerified: session.user.emailVarified
+        pendingEmail: session.user.pendingEmail,
+        emailVerified: session.user.emailVerified,
+        updatedAt: session.user.updatedAt
     };
 }

@@ -63,7 +63,7 @@ export async function signin(prevState: SigninFormState, data: FormData): Promis
         }
     }
 
-    if (!existingUser.emailVarified) {
+    if (!existingUser.emailVerified) {
 
         const token = await prisma.verificationTokens.findFirst({
             where: {
@@ -91,6 +91,7 @@ export async function signin(prevState: SigninFormState, data: FormData): Promis
     }
 
     await createSession(existingUser.id);
+
 
     return {
         success: true,
