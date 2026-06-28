@@ -5,8 +5,17 @@ import Image from "next/image";
 import { Product } from "@/types/products";
 import { formatCurrency } from "@/lib/helper";
 import DiscountBadge from "@/components/shared/DiscountBadge";
+import { cn } from "@/lib/utils";
+import { addProductWishlist } from "@/app/actions/updateWishlist";
+import ProductWishlistButton from "./ProductWishlistButton";
 
-export function ProductCard({ name, imageUrl, category, variants }: Partial<Product>) {
+interface ProductCardProps extends Partial<Product> {
+  isWishListed: boolean;
+  isFromWishlist?: boolean
+}
+
+export function ProductCard({ id, name, imageUrl, category, variants, isWishListed, isFromWishlist }: ProductCardProps) {
+
 
   return (
 
@@ -22,9 +31,7 @@ export function ProductCard({ name, imageUrl, category, variants }: Partial<Prod
           className="object-cover rounded-lg"
         />
 
-        <button className="absolute right-3 top-3 rounded-full bg-white p-2">
-          <Heart size={18} />
-        </button>
+        <ProductWishlistButton id={id} isWishListed={isWishListed} isFromWishlist={isFromWishlist} />
 
       </div>
 

@@ -5,6 +5,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { getCurrentUser } from "@/lib/queries/getCurrentUser";
 import AuthProvider from "@/components/Provider/AuthProvider";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +45,11 @@ export default async function RootLayout({
           {modal}
           <Footer />
         </AuthProvider>
+        <Toaster
+          richColors
+          position="top-right"
+          closeButton
+        />
       </body>
     </html>
   );

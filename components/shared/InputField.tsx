@@ -22,7 +22,7 @@ export default function InputField({ error, label, ...props }: InputFieldProps) 
 
             <Input
                 {...props}
-                disabled={pending}
+                disabled={pending || props.disabled}
                 className={cn(
                     props.className,
                     error && "border-red-500! focus-visible:ring-red-500!"

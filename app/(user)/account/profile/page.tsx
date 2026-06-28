@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import UserAvatar from "@/components/shared/UserAvatar";
 import { getCurrentUser } from "@/lib/queries/getCurrentUser";
+import Link from "next/link";
 
 type User = {
     firstName: string;
@@ -72,11 +73,6 @@ export default async function ProfilePage() {
                         />
 
                         <Info
-                            label="Phone"
-                            value={user.phone ?? "-"}
-                        />
-
-                        <Info
                             label="Member Since"
                             value={user.createdAt.toLocaleDateString()}
                         />
@@ -105,8 +101,10 @@ export default async function ProfilePage() {
                 <Separator />
 
                 <div className="flex justify-end">
-                    <Button>
-                        Edit Profile
+                    <Button asChild>
+                        <Link href="/account/profile/edit">
+                            Edit Profile
+                        </Link>
                     </Button>
                 </div>
             </CardContent>
