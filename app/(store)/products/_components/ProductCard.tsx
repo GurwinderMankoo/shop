@@ -8,6 +8,7 @@ import DiscountBadge from "@/components/shared/DiscountBadge";
 import { cn } from "@/lib/utils";
 import { addProductWishlist } from "@/app/actions/updateWishlist";
 import ProductWishlistButton from "./ProductWishlistButton";
+import ProductAddToCartButton from "./ProductAddToCartButton";
 
 interface ProductCardProps extends Partial<Product> {
   isWishListed: boolean;
@@ -31,7 +32,7 @@ export function ProductCard({ id, name, imageUrl, category, variants, isWishList
           className="object-cover rounded-lg"
         />
 
-        <ProductWishlistButton id={id} isWishListed={isWishListed} isFromWishlist={isFromWishlist} />
+        <ProductWishlistButton id={id} isWishListed={isWishListed} />
 
       </div>
 
@@ -59,40 +60,35 @@ export function ProductCard({ id, name, imageUrl, category, variants, isWishList
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
 
-              {variants?.[0]?.price && (
+              {variants?.[0]?.price ? (
                 <span className="text-lg font-bold">
                   {formatCurrency(variants[0].price)}
                 </span>
-              )}
+              ) : null}
 
-              {variants?.[0]?.comparePrice && (
+              {variants?.[0]?.comparePrice ? (
                 <span className="text-sm text-muted-foreground line-through">
                   {formatCurrency(variants[0].comparePrice)}
                 </span>
-              )}
+              ) : null}
 
             </div>
 
 
-            {variants?.[0]?.comparePrice && (
+            {variants?.[0]?.comparePrice ? (
               <div className="mt-1">
                 {DiscountBadge({
-                  price: variants[0].price || 0,
-                  comparePrice: variants[0].comparePrice || 0,
+                  price: Number(variants[0].price) || 0,
+                  comparePrice: Number(variants[0].comparePrice) || 0,
                 })}
               </div>
-            )}
+            ) : null}
 
           </div>
 
 
           {/* Cart Button */}
-          <Button
-            size="icon"
-            className="shrink-0"
-          >
-            <ShoppingCart size={18} />
-          </Button>
+          <ProductAddToCartButton id={variants?.[0]?.id ?? ''} />
 
         </div>
 

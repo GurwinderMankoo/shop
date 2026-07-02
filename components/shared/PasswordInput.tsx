@@ -32,7 +32,7 @@ export default function PasswordInput({ label, error, ...props }: InputFieldProp
                     )}
                     aria-invalid={!!error}
                     aria-describedby={
-                        error ? `${props.id}-error` : undefined
+                        error && props.id ? `${props.id}-error` : undefined
                     }
 
                     style={error ? { border: "1px solid red" } : {}}

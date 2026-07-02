@@ -1,6 +1,7 @@
 "use server"
 import { prisma } from "@/lib/prisma";
 import { TokenSchema } from "@/lib/validations/auth.schema";
+import { redirect } from "next/navigation";
 
 export async function verifyEmail(token: string) {
     try {

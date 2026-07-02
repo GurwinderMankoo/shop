@@ -1,8 +1,11 @@
+import { Decimal } from "@prisma/client/runtime/library";
+
 export function formatCurrency(
-    amount: number,
+    amount: number | Decimal,
     currency: string = "INR",
     locale: string = "en-IN"
 ) {
+    amount = Number(amount);
     return new Intl.NumberFormat(locale, {
         style: "currency",
         currency,

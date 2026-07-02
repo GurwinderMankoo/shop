@@ -1,8 +1,9 @@
-export default function Error({ err, id }: { err: string | undefined, id: string }) {
+export default function Error({ err, id }: { err: string | undefined, id: string | undefined }) {
     if (!err) return null
     return (
         <p
-            id={`${id}-error`} className="text-xs text-destructive">
+            id={id ? `${id}-error` : undefined}
+            className="text-xs text-destructive">
             {err}
         </p>
     )

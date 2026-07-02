@@ -25,6 +25,8 @@ export default async function VerifyEmailPage({
 
     const isSuccess = result.success;
 
+    console.log(result, "result")
+
     return (
         <div className="container flex min-h-[calc(100vh-4rem)] items-center justify-center py-10">
             <div className="w-full max-w-md rounded-xl border bg-card p-8 shadow-sm">

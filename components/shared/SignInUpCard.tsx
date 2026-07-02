@@ -16,6 +16,7 @@ import SubmitButton from "./SubmitButton"
 import { SignupFormState } from "@/types/signup.type";
 import { useEffect } from "react";
 import { useAuth } from "../Provider/AuthProvider";
+import { toast } from "sonner";
 
 type Props = {
     type: "sign-in" | "sign-up",
@@ -30,7 +31,8 @@ export function SignInUpCard({ type = "sign-in", onNavigate, action, state }: Pr
     const errors = state?.errors ?? {};
     const success = state?.success ?? {};
     const values = state?.values ?? {};
-    const user = state?.user ?? null;
+    const user = state?.user ?? undefined;
+    const message = state?.message ?? "";
     const { email, password, firstName, lastName } = errors
     const { email: emailValue, password: passwordValue, firstName: firstNameValue, lastName: lastNameValue } = values
     const { updateUser } = useAuth();
@@ -42,11 +44,19 @@ export function SignInUpCard({ type = "sign-in", onNavigate, action, state }: Pr
     }, [success, onNavigate, router])
 
     useEffect(() => {
-        if (success) {
-            updateUser(user);
+        if (success && user) {
+            updateUser(user)
         }
     }, [success, user, updateUser])
 
+
+    useEffect(() => {
+        if (success && message) {
+            toast.success(message)
+        } else if (!success && message) {
+            toast.error(message)
+        }
+    }, [message, success])
 
     return (
         <Card className="w-full max-w-md border-0 shadow-2xl backdrop-blur-sm">

@@ -1,25 +1,21 @@
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import Headers from "@/components/shared/Headers";
 import { getProduct } from "@/lib/queries/products";
-import { formatCurrency } from "@/lib/helper";
-import DiscountBadge from "@/components/shared/DiscountBadge";
 import ProductGallery from "../_components/ProductGallery";
+import ProductDetails from "./_components/ProductDetails";
+import { notFound } from "next/navigation";
 
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }>; }) {
     const { slug } = await params;
 
-    const product = await getProduct(slug);
+    const { success, error, data: product } = await getProduct(slug);
+
+    if (!product || !success) {
+        notFound();
+    }
 
     return (
         <div className="container mx-auto px-4 py-10">
@@ -51,82 +47,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                         }
                     </p>
 
-                    <div className="mt-6 flex items-center gap-3">
-                        <span className="text-4xl font-bold">
-                            {
-                                formatCurrency(product?.variants[0].price || 0)
-                            }
-                        </span>
-
-                        <span className="text-lg text-muted-foreground line-through">
-                            {
-                                formatCurrency(product?.variants[0].comparePrice || 0)
-                            }
-                        </span>
-                        {
-                            DiscountBadge({
-                                price: product?.variants[0].price || 0,
-                                comparePrice: product?.variants[0].comparePrice || 0
-                            })
-                        }
-                    </div>
-
-                    {/* Variants */}
-
-                    <div className="mt-8">
-                        <label className="mb-2 block font-medium">
-                            Color
-                        </label>
-
-                        <Select>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select color" />
-                            </SelectTrigger>
-
-                            <SelectContent>
-                                <SelectItem value="black">
-                                    Black
-                                </SelectItem>
-
-                                <SelectItem value="white">
-                                    White
-                                </SelectItem>
-
-                                <SelectItem value="blue">
-                                    Blue
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    {/* Quantity */}
-
-                    <div className="mt-6">
-                        <label className="mb-2 block font-medium">
-                            Quantity
-                        </label>
-
-                        <input
-                            type="number"
-                            defaultValue={1}
-                            min={1}
-                            className="h-10 w-24 rounded-md border px-3" />
-                    </div>
-
-                    {/* Actions */}
-
-                    <div className="mt-8 flex gap-4">
-                        <Button size="lg">
-                            Add to Cart
-                        </Button>
-
-                        <Button
-                            size="lg"
-                            variant="outline"
-                        >
-                            Buy Now
-                        </Button>
-                    </div>
+                    <ProductDetails product={product} />
 
                     {/* Features */}
 

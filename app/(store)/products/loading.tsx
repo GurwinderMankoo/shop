@@ -5,6 +5,7 @@ import ProductCardSkeleton from "./_components/ProductCardSkeleton";
 
 
 export default function Loading() {
+    console.log("loading page")
     return (
         <div className="container mx-auto px-3 py-10">
 

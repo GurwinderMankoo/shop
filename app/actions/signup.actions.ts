@@ -29,6 +29,7 @@ export async function signup(prevState: SignupFormState, data: FormData): Promis
     if (!result.success) {
         return {
             success: false,
+            message: 'Please provide the details correctly',
             errors: result.error.flatten().fieldErrors,
             values: {
                 ...values
@@ -52,6 +53,7 @@ export async function signup(prevState: SignupFormState, data: FormData): Promis
     if (existingUser) {
         return {
             success: false,
+            message: 'Email already exists. Try to log in.',
             errors: {
                 email: ["Email already exists"]
             }
@@ -78,6 +80,7 @@ export async function signup(prevState: SignupFormState, data: FormData): Promis
 
     return {
         success: true,
+        message: 'Please check your email to verify your account.',
         errors: {}
     };
 
