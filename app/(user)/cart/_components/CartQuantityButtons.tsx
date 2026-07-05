@@ -12,7 +12,6 @@ export default function CartQuantityButtons({ quantity, id }: { quantity: number
     const router = useRouter();
     const updateCart = async (event: React.MouseEvent<HTMLButtonElement>, variantId: string, quantity: number) => {
 
-        // console.log(variantId, quantity)
 
         event.preventDefault();
         setLoading(true);

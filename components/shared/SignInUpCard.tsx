@@ -17,6 +17,7 @@ import { SignupFormState } from "@/types/signup.type";
 import { useEffect } from "react";
 import { useAuth } from "../Provider/AuthProvider";
 import { toast } from "sonner";
+import Link from "next/link";
 
 type Props = {
     type: "sign-in" | "sign-up",
@@ -36,12 +37,6 @@ export function SignInUpCard({ type = "sign-in", onNavigate, action, state }: Pr
     const { email, password, firstName, lastName } = errors
     const { email: emailValue, password: passwordValue, firstName: firstNameValue, lastName: lastNameValue } = values
     const { updateUser } = useAuth();
-
-    useEffect(() => {
-        if (success && onNavigate) {
-            router.back();
-        }
-    }, [success, onNavigate, router])
 
     useEffect(() => {
         if (success && user) {
@@ -83,11 +78,13 @@ export function SignInUpCard({ type = "sign-in", onNavigate, action, state }: Pr
             <form action={action}>
                 <CardContent className="space-y-5">
                     <Button
-                        type="button"
                         variant="outline"
                         className="w-full h-11"
+                        asChild
                     >
-                        Continue with Google
+                        <Link href="/api/auth/google/login">
+                            Continue with Google
+                        </Link>
                     </Button>
 
                     <div className="relative">

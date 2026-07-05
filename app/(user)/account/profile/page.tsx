@@ -8,9 +8,9 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import UserAvatar from "@/components/shared/UserAvatar";
 import { getCurrentUser } from "@/lib/queries/getCurrentUser";
 import Link from "next/link";
+import UserAvatar from "@/components/shared/UserAvatar";
 
 type User = {
     firstName: string;
@@ -36,7 +36,7 @@ export default async function ProfilePage() {
     return (
         <Card className="border-none shadow-none">
             <CardHeader className="items-center text-center">
-                <UserAvatar initials={initials} />
+                <UserAvatar image={user.image || null} initials={initials} firstName={user.firstName} />
 
                 <CardTitle className="mt-4 text-2xl">
                     {user.firstName} {user.lastName}

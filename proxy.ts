@@ -6,7 +6,7 @@ export function proxy(request: NextRequest) {
 
     const pathname = request.nextUrl.pathname;
 
-    const authRoutes = ["/sign-in", "/sign-up", "/verify-email", "/reset-password"];
+    const authRoutes = ["/sign-in", "/sign-up", "/reset-password"];
 
     const longAuthUrls = ['/verify-email',];
 
@@ -46,6 +46,5 @@ export const config = {
         "/checkout",
         "/wishlist",
         "/cart",
-        '/verify-email',
     ],
 };

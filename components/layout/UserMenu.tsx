@@ -9,7 +9,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useAuth } from "../Provider/AuthProvider";
 import Link from "next/link";
 import { LogIn } from "lucide-react";
@@ -32,7 +31,6 @@ export default function UserMenu() {
         )
     }
 
-
     const initials = `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase();
 
 
@@ -41,8 +39,8 @@ export default function UserMenu() {
 
             <DropdownMenuTrigger asChild>
 
-                <button className="shrink-0 outline-none">
-                    <UserAvatar initials={initials} />
+                <button className="shrink-0 outline-none cursor-pointer">
+                    <UserAvatar image={user.image} initials={initials} firstName={user.firstName} />
                 </button>
 
             </DropdownMenuTrigger>

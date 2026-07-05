@@ -48,8 +48,6 @@ export default async function ProductsPage({ searchParams }: ProductPageProps) {
 
   const wishlistSets = new Set(wishlist.map((item) => item.productId));
 
-  console.log('Product page')
-
   return (
     <div className="container mx-auto py-10">
 

@@ -48,7 +48,6 @@ export async function addProductWishlist(productId: string) {
 export async function removeProductWishlist(productId: string) {
     try {
         const user = await getCurrentUser();
-        console.log(user, "user")
 
         if (!user) {
 

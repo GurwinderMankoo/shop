@@ -101,6 +101,7 @@ export async function signin(prevState: SigninFormState, data: FormData): Promis
         success: true,
         errors: {},
         user: {
+
             id: existingUser.id,
             email: existingUser.email,
             firstName: existingUser.firstName,

@@ -1,12 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Heart, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { Product } from "@/types/products";
 import { formatCurrency } from "@/lib/helper";
 import DiscountBadge from "@/components/shared/DiscountBadge";
-import { cn } from "@/lib/utils";
-import { addProductWishlist } from "@/app/actions/updateWishlist";
 import ProductWishlistButton from "./ProductWishlistButton";
 import ProductAddToCartButton from "./ProductAddToCartButton";
 
@@ -32,7 +28,7 @@ export function ProductCard({ id, name, imageUrl, category, variants, isWishList
           className="object-cover rounded-lg"
         />
 
-        <ProductWishlistButton id={id} isWishListed={isWishListed} />
+        <ProductWishlistButton id={id} isWishListed={isWishListed} isFromWishlist={isFromWishlist} />
 
       </div>
 

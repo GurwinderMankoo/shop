@@ -14,21 +14,32 @@ const initialState: SigninFormState = {
 };
 
 export default function SignIn({ onNavigate }: { onNavigate?: (path: string) => void }) {
-    const [state, formAction, pending] = useActionState(signin, initialState);
+    const [state, formAction] = useActionState(signin, initialState);
     const { success } = state
     const searchParams = useSearchParams();
     const callback = searchParams.get('callbackUrl');
     const router = useRouter();
 
     useEffect(() => {
-        if (success && callback) {
+        if (!success) {
+            return;
+        }
+
+        if (callback) {
             if (typeof onNavigate === 'function') {
                 onNavigate?.(callback);
             } else {
                 router.push(callback);
             }
+            return;
         }
-    }, [success, callback, router])
+
+        if (typeof onNavigate === 'function') {
+            router.back();
+        } else {
+            router.push("/products");
+        }
+    }, [success, callback, onNavigate, router])
 
     return (
         <SignInUpCard type='sign-in' action={formAction} state={state} onNavigate={onNavigate} />

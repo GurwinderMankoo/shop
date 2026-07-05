@@ -1,17 +1,17 @@
+'use server'
+
 import { resend } from "../resend"
 
 
-export async function sendEmail(email: string, token: string, isUpdateEmail: boolean = false) {
+export async function sendDummyLink() {
     try {
 
-        const verifyURL = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${token}&isUpdateEmail=${isUpdateEmail}`
-
-        const to = email === 'gurwinder.codes@gmail.com' ? email : 'delivered@resend.dev';
+        const verifyURL = `${process.env.NEXT_PUBLIC_APP_URL}/products`
 
         const { data, error } = await resend.emails.send({
             from: "My Store <onboarding@resend.dev>",
-            to, //In production change this to email
-            subject: `Verify your email on ${email}`,
+            to: 'delivered@resend.dev', //In production change this to email
+            subject: `Test `,
             html: `
                 <h2>Welcome!</h2>
 
@@ -19,7 +19,7 @@ export async function sendEmail(email: string, token: string, isUpdateEmail: boo
                 Click the button below to verify your email.
                 </p>
 
-                <a href="${verifyURL}">
+                <a href="${verifyURL}" target="_blank">
                 Verify Email
                 </a>
             `,

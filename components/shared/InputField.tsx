@@ -8,7 +8,7 @@ import { useFormStatus } from "react-dom";
 
 interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
     error?: string
-    label?: string
+    label?: string | React.ReactNode
 
 }
 

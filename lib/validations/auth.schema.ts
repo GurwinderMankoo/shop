@@ -48,8 +48,16 @@ export const updateProfileSchema = z.object({
     lastName: z.string().min(2, "Last name is required"),
 })
 
+
+export const deleteAccountSchema = z.object({
+    password: z.string().min(1, "Password is required"),
+    confirmationText: z.literal("DELETE", { error: 'Confirmation text must be "DELETE"' }),
+})
+
 // Define a strict schema rule
 export const TokenSchema = z.string().trim().uuid("Invalid Token layout");
+
+export type DeleteAccountSchema = z.infer<typeof deleteAccountSchema>
 
 export type TokenSchemaType = z.infer<typeof TokenSchema>
 

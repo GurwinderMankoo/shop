@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getCurrentUser } from "@/lib/queries/getCurrentUser";
 import { formatLastChanged } from "@/lib/helper";
+import DeleteAlert from "./delete-account/_DeleteAlert";
 
 export default async function SettingsPage() {
 
@@ -172,12 +173,7 @@ export default async function SettingsPage() {
 
                 <CardContent className="pt-6">
 
-                    <Button
-                        variant="destructive"
-                        disabled
-                    >
-                        Delete Account
-                    </Button>
+                    <DeleteAlert />
 
                 </CardContent>
             </Card>

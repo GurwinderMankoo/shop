@@ -1,6 +1,6 @@
 "use client";
-import { useCallback, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useCallback, useMemo, useState, useTransition } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 import DiscountBadge from "@/components/shared/DiscountBadge";
 import { formatCurrency } from "@/lib/helper";
@@ -8,11 +8,16 @@ import { Product } from "@/types/products";
 import VariantOptions from "./VariantOptions";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/Provider/AuthProvider";
+import { addToCart } from "@/app/actions/updateCart";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 export default function ProductDetails({ product }: { product: Product }) {
     const [quantity, setQuantity] = useState(1);
     const { user } = useAuth()
     const router = useRouter()
+    const pathname = usePathname()
+    const [isPending, startTransition] = useTransition();
 
     const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
 
@@ -55,14 +60,23 @@ export default function ProductDetails({ product }: { product: Product }) {
 
     const onAddToCart = () => {
         if (!user) {
-            router.push("/sign-in")
+            router.push(`/sign-in?callbackUrl=${encodeURIComponent(pathname)}`);
+            return;
         }
-        const cartItem = {
-            id: selectedVariant.id,
-            quantity,
-            variantId: selectedVariant.id,
-            variant: selectedVariant,
-        };
+
+        startTransition(async () => {
+            const res = await addToCart(selectedVariant.id, quantity);
+
+            if (res.success) {
+                toast.success("Product added to your cart!");
+                router.refresh();
+                return;
+            }
+
+            if (res.error) {
+                toast.error(res.error);
+            }
+        });
     }
 
     return (
@@ -122,7 +136,10 @@ export default function ProductDetails({ product }: { product: Product }) {
             {/* Actions */}
 
             <div className="mt-8 flex gap-4">
-                <Button size="lg" onClick={onAddToCart}>
+                <Button size="lg" onClick={onAddToCart} disabled={isPending}>
+                    {isPending ? (
+                        <Loader2 className="animate-spin" />
+                    ) : null}
                     Add to Cart
                 </Button>
 

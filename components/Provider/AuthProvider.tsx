@@ -14,7 +14,8 @@ type User = {
     email: string;
     firstName: string;
     lastName: string;
-    role: string
+    role: string,
+    image?: string
 };
 type UserUpdates = Partial<Omit<User, "id" | "email" | "role">>;
 

@@ -4,13 +4,14 @@ import { addProductWishlist, removeProductWishlist } from "@/app/actions/updateW
 import { useAuth } from "@/components/Provider/AuthProvider";
 import { cn } from "@/lib/utils";
 import { Heart, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useTransition, useEffect } from "react";
 import { toast } from "sonner";
 
-export default function ProductWishlistButton({ id, isWishListed }: { id: string | undefined, isWishListed: boolean }) {
+export default function ProductWishlistButton({ id, isWishListed, isFromWishlist }: { id: string | undefined, isWishListed: boolean, isFromWishlist?: boolean }) {
     const { user } = useAuth();
     const router = useRouter();
+    const pathname = usePathname();
     const [isPending, startTransition] = useTransition();
 
     // Local state for instant UI feedback
@@ -23,11 +24,12 @@ export default function ProductWishlistButton({ id, isWishListed }: { id: string
 
     const handleWishlistToggle = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
+        e.stopPropagation();
 
         if (!id) return;
 
         if (!user) {
-            router.push('/sign-in');
+            router.push(`/sign-in?callbackUrl=${encodeURIComponent(pathname)}`);
             return;
         }
 
@@ -44,6 +46,10 @@ export default function ProductWishlistButton({ id, isWishListed }: { id: string
 
                 if (res?.success) {
                     toast.success(nextState ? "Added to wishlist!" : "Removed from wishlist!");
+
+                    if (isFromWishlist) {
+                        router.refresh();
+                    }
                     // Next.js automatically refreshes server components here because of useTransition
                 } else {
                     // 3. Fallback: Revert UI if the server action returned an error explicitly
