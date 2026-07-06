@@ -10,7 +10,7 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import InputField from "./InputField"
 import SubmitButton from "./SubmitButton"
 import { SignupFormState } from "@/types/signup.type";
@@ -18,6 +18,7 @@ import { useEffect } from "react";
 import { useAuth } from "../Provider/AuthProvider";
 import { toast } from "sonner";
 import Link from "next/link";
+import { GoogleSignInButton } from "./GoogleSignInButton";
 
 type Props = {
     type: "sign-in" | "sign-up",
@@ -28,6 +29,7 @@ type Props = {
 
 export function SignInUpCard({ type = "sign-in", onNavigate, action, state }: Props) {
     const router = useRouter()
+    const pathname = usePathname();
 
     const errors = state?.errors ?? {};
     const success = state?.success ?? {};
@@ -76,16 +78,16 @@ export function SignInUpCard({ type = "sign-in", onNavigate, action, state }: Pr
             </CardHeader>
 
             <form action={action}>
-                <CardContent className="space-y-5">
-                    <Button
-                        variant="outline"
-                        className="w-full h-11"
-                        asChild
-                    >
-                        <Link href="/api/auth/google/login">
-                            Continue with Google
-                        </Link>
-                    </Button>
+                <CardContent className="space-y-5 ">
+                    <div className="flex w-full justify-center">
+                        <GoogleSignInButton>
+                            <Link href={`/api/auth/google/login?callbackUrl=${pathname}`}>
+                                Continue with Google
+                            </Link>
+
+                        </GoogleSignInButton>
+
+                    </div>
 
                     <div className="relative">
                         <div className="absolute inset-0 flex items-center">

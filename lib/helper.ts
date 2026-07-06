@@ -42,3 +42,11 @@ export function formatLastChanged(pastDate: Date) {
     }
 
 }
+
+export function encodeState(state: any) {
+    return Buffer.from(JSON.stringify(state)).toString("base64");
+}
+
+export function decodeState(state: string) {
+    return JSON.parse(Buffer.from(state, "base64").toString());
+}

@@ -1,4 +1,5 @@
 import { exchangeCodeForTokens, verifyGoogleIdToken } from "@/lib/auth/google";
+import { decodeState } from "@/lib/helper";
 import { prisma } from "@/lib/prisma";
 import { createSession } from "@/lib/queries/session";
 import { cookies } from "next/headers";
@@ -6,14 +7,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
     //GET state and code
-    const state = request.nextUrl.searchParams.get("state");
+    const stateData = request.nextUrl.searchParams.get("state");
     const code = request.nextUrl.searchParams.get("code");
+
+    const { token, callbackUrl } = decodeState(stateData!);
 
     //Verify state
     const cookieStore = await cookies();
     const storedState = cookieStore.get("google_oauth_state")?.value;
 
-    if (!state || !code || state !== storedState) {
+    if (!token || !code || token !== storedState) {
         return NextResponse.json({ error: "Invalid OAuth state" }, { status: 400 });
     }
 
@@ -44,7 +47,7 @@ export async function GET(request: NextRequest) {
         })
     }
     await createSession(existingUser.id);
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL(callbackUrl ?? '/', request.url));
 
 
     // return NextResponse.json({
