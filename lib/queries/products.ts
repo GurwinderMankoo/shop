@@ -12,7 +12,6 @@ type GetProductsParams = {
     search?: string
 }
 
-
 export async function getProducts({ page = 1, limit = 10, category, sort, minPrice, maxPrice, search }: GetProductsParams) {
 
     const skip = (page - 1) * limit;
@@ -88,7 +87,7 @@ export async function getProducts({ page = 1, limit = 10, category, sort, minPri
                         }
                     }
                 },
-                category: true
+                category: true,
             },
             orderBy
         }),
@@ -97,6 +96,33 @@ export async function getProducts({ page = 1, limit = 10, category, sort, minPri
 
     const totalPages = Math.ceil(totalProducts / limit);
 
+    // Fetch review stats for all products in one query
+    const productIds = products.map(p => p.id);
+    const reviewStats = await prisma.review.groupBy({
+        by: ["productId"],
+        where: {
+            productId: {
+                in: productIds
+            }
+        },
+        _avg: {
+            rating: true
+        },
+        _count: {
+            rating: true
+        }
+    });
+
+    const reviewStatsMap = new Map(
+        reviewStats.map(stat => [
+            stat.productId,
+            {
+                averageRating: stat._avg.rating ? Number(stat._avg.rating.toFixed(1)) : 0,
+                totalReviews: stat._count.rating
+            }
+        ])
+    );
+
     const mappedProducts = products.map(product => ({
         ...product,
         minPrice: product.minPrice ? Number(product.minPrice) : null,
@@ -104,7 +130,8 @@ export async function getProducts({ page = 1, limit = 10, category, sort, minPri
             ...v,
             price: Number(v.price),
             comparePrice: v.comparePrice ? Number(v.comparePrice) : null,
-        }))
+        })),
+        reviewStats: reviewStatsMap.get(product.id) ?? { averageRating: 0, totalReviews: 0 }
     }));
 
     return {

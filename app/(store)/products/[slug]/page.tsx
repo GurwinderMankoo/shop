@@ -3,8 +3,10 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Headers from "@/components/shared/Headers";
 import { getProduct } from "@/lib/queries/products";
+import { getProductReviews, getProductReviewStats, getUserReview } from "@/lib/queries/reviews";
 import ProductGallery from "../_components/ProductGallery";
 import ProductDetails from "./_components/ProductDetails";
+import ProductReviews from "@/components/reviews/ProductReviews";
 import { notFound } from "next/navigation";
 
 
@@ -16,6 +18,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     if (!product || !success) {
         notFound();
     }
+
+    const [reviewsResult, reviewStatsResult, userReviewResult] = await Promise.all([
+        getProductReviews(product.id),
+        getProductReviewStats(product.id),
+        getUserReview(product.id),
+    ]);
 
     return (
         <div className="container mx-auto px-4 py-10">
@@ -70,6 +78,16 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                     {product?.description}
                 </p>
             </section>
+
+            {/* Reviews */}
+
+            <ProductReviews
+                productId={product.id}
+                productSlug={slug}
+                reviews={reviewsResult.data}
+                stats={reviewStatsResult.data}
+                existingUserReview={userReviewResult.data}
+            />
 
             {/* Related Products */}
 

@@ -5,13 +5,18 @@ import { formatCurrency } from "@/lib/helper";
 import DiscountBadge from "@/components/shared/DiscountBadge";
 import ProductWishlistButton from "./ProductWishlistButton";
 import ProductAddToCartButton from "./ProductAddToCartButton";
+import StarRating from "@/components/reviews/StarRating";
 
 interface ProductCardProps extends Partial<Product> {
   isWishListed: boolean;
-  isFromWishlist?: boolean
+  isFromWishlist?: boolean;
+  reviewStats?: {
+    averageRating: number;
+    totalReviews: number;
+  };
 }
 
-export function ProductCard({ id, name, imageUrl, category, variants, isWishListed, isFromWishlist }: ProductCardProps) {
+export function ProductCard({ id, name, imageUrl, category, variants, isWishListed, isFromWishlist, reviewStats }: ProductCardProps) {
 
 
   return (
@@ -42,6 +47,14 @@ export function ProductCard({ id, name, imageUrl, category, variants, isWishList
           }
         </h3>
 
+        <div className="flex items-center gap-1.5">
+          <StarRating rating={reviewStats?.averageRating ?? 0} interactive={false} size={12} />
+          {reviewStats && reviewStats.totalReviews > 0 && (
+            <span className="text-[10px] text-muted-foreground">
+              ({reviewStats.totalReviews})
+            </span>
+          )}
+        </div>
 
         <p className="mt-1 text-sm text-muted-foreground">
           {

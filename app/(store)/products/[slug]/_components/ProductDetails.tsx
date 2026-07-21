@@ -143,12 +143,12 @@ export default function ProductDetails({ product }: { product: Product }) {
                     Add to Cart
                 </Button>
 
-                <Button
+                {/* <Button
                     size="lg"
                     variant="outline"
                 >
                     Buy Now
-                </Button>
+                </Button> */}
             </div>
 
         </>

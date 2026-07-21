@@ -67,6 +67,22 @@ export type Product = {
   updatedAt: Date;
 };
 
+export type Review = {
+  id: string;
+  rating: number;
+  comment: string;
+  userId: string;
+  productId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    image: string | null;
+  };
+};
+
 export type Category = {
   id: string;
   name: string;
