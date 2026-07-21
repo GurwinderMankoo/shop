@@ -1,41 +1,67 @@
+import { Decimal } from "@prisma/client/runtime/library";
+
 export type ProductImage = {
   id: string;
   url: string;
   altText: string | null;
 };
 
-
-export type VariantOption = {
+export type ProductOptionValue = {
   id: string;
-  name: string;
   value: string;
 };
 
+export type ProductOption = {
+  id: string;
+  name: string;
+
+  values: ProductOptionValue[];
+};
+
+export type ProductVariantOptionValue = {
+  variantId: string;
+  optionValueId: string;
+
+  optionValue: {
+    id: string;
+    value: string;
+    option: {
+      id: string;
+      name: string;
+    };
+  };
+};
 
 export type ProductVariant = {
   id: string;
   name: string;
   sku: string;
-  price: number;
-  comparePrice?: number | null;
+
+  price: Decimal | number | null;
+  comparePrice: Decimal | number | null;
   stock: number;
 
-  options?: VariantOption[];
+  optionValues: ProductVariantOptionValue[];
 };
-
 
 export type Product = {
   id: string;
   name: string;
   slug: string;
+
   imageUrl: string | null;
   description: string | null;
 
+  isActive: boolean;
+  minPrice: Decimal | number | null;
+
   images: ProductImage[];
+
+  options: ProductOption[];
 
   variants: ProductVariant[];
 
-  category?: Partial<Category> | null;
+  category: Pick<Category, "id" | "name" | "slug"> | null;
 
   createdAt: Date;
   updatedAt: Date;
@@ -45,7 +71,9 @@ export type Category = {
   id: string;
   name: string;
   slug: string;
+
   description: string | null;
   imageUrl: string | null;
+
   products: Product[];
-}
+};

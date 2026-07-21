@@ -8,32 +8,19 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import EmptyState from "./_EmptyState";
+import { getOrders } from "@/app/actions/orders";
+import { formatCurrency } from "@/lib/helper";
 
 type Order = {
     id: string;
-    status: "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled";
+    status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED" | "REFUNDED" | "PAID";
     createdAt: Date;
     total: number;
     itemCount: number;
 };
 
-export default function OrdersPage() {
-    const orders: Order[] = [
-        {
-            id: "102348",
-            status: "Delivered",
-            createdAt: new Date(),
-            total: 129.99,
-            itemCount: 2,
-        },
-        {
-            id: "102201",
-            status: "Shipped",
-            createdAt: new Date(),
-            total: 39.99,
-            itemCount: 1,
-        },
-    ];
+export default async function OrdersPage() {
+    const orders = await getOrders();
 
 
     return (
@@ -73,12 +60,14 @@ export default function OrdersPage() {
 
                                     <p>
                                         <strong>Items:</strong>{" "}
-                                        {order.itemCount}
+                                        {order.items.length}
                                     </p>
 
                                     <p>
-                                        <strong>Total:</strong> £
-                                        {order.total.toFixed(2)}
+                                        <strong>Total:</strong>
+                                        {
+                                            formatCurrency(order.total)
+                                        }
                                     </p>
 
                                 </div>
@@ -105,19 +94,28 @@ function StatusBadge({
     status: Order["status"];
 }) {
     switch (status) {
-        case "Delivered":
+        case "DELIVERED":
             return <Badge>Delivered</Badge>;
 
-        case "Shipped":
+        case "SHIPPED":
             return <Badge variant="secondary">Shipped</Badge>;
 
-        case "Processing":
+        case "PROCESSING":
             return <Badge variant="outline">Processing</Badge>;
 
-        case "Pending":
+        case "PAID":
+            return <Badge variant="outline">Paid</Badge>;
+
+        case "PENDING":
             return <Badge variant="outline">Pending</Badge>;
 
-        case "Cancelled":
+        case "CANCELLED":
             return <Badge variant="destructive">Cancelled</Badge>;
+
+        case "REFUNDED":
+            return <Badge variant="destructive">Refunded</Badge>;
+
+        default:
+            return null;
     }
 }

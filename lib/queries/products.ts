@@ -75,7 +75,19 @@ export async function getProducts({ page = 1, limit = 10, category, sort, minPri
             take: limit,
             where,
             include: {
-                variants: true,
+                variants: {
+                    include: {
+                        optionValues: {
+                            include: {
+                                optionValue: {
+                                    include: {
+                                        option: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 category: true
             },
             orderBy
@@ -85,8 +97,18 @@ export async function getProducts({ page = 1, limit = 10, category, sort, minPri
 
     const totalPages = Math.ceil(totalProducts / limit);
 
+    const mappedProducts = products.map(product => ({
+        ...product,
+        minPrice: product.minPrice ? Number(product.minPrice) : null,
+        variants: product.variants.map(v => ({
+            ...v,
+            price: Number(v.price),
+            comparePrice: v.comparePrice ? Number(v.comparePrice) : null,
+        }))
+    }));
+
     return {
-        products,
+        products: mappedProducts,
         pagination: {
             page,
             limit,
@@ -97,17 +119,67 @@ export async function getProducts({ page = 1, limit = 10, category, sort, minPri
 }
 
 
-export async function getProduct(id: string) {
-    return await prisma.product.findUnique({
-        where: {
-            id
-        },
-        include: {
-            variants: true,
-            category: true,
-            images: true
+export async function getProduct(slug: string) {
+
+    try {
+        const product = await prisma.product.findUnique({
+            where: {
+                slug
+            },
+            include: {
+                category: true,
+                images: true,
+                options: {
+                    include: {
+                        values: true
+                    }
+                },
+                variants: {
+                    include: {
+                        optionValues: {
+                            include: {
+                                optionValue: {
+                                    include: {
+                                        option: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!product) {
+            return {
+                success: false,
+                error: "Product not found",
+                data: null
+            }
         }
-    });
+
+        return {
+            success: true,
+            error: null,
+            data: {
+                ...product,
+                minPrice: product.minPrice?.toNumber() ?? null,
+                variants: product.variants.map((variant) => ({
+                    ...variant,
+                    price: variant.price.toNumber(),
+                    comparePrice: variant.comparePrice?.toNumber() ?? null,
+                })),
+            }
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: "Error fetching product",
+            data: null
+        }
+    }
+
+
 }
 
 async function wait(ms: number) {

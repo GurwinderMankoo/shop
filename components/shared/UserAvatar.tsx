@@ -1,16 +1,20 @@
-import { Avatar, AvatarFallback } from "../ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 
 type Props = {
+    image: string | null | undefined
     initials: string
+    firstName: string
 }
 
-export default function UserAvatar({ initials }: Props) {
+export default function UserAvatar({ image, initials, firstName }: Props) {
     return (
-        <Avatar className="cursor-pointer h-8 w-8">
-            <AvatarFallback className="w-full">
-                {initials}
-            </AvatarFallback>
+        <Avatar>
+            <AvatarImage
+                src={image || ""}
+                alt={firstName || initials || 'User'}
+            />
+            <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
     )
 }

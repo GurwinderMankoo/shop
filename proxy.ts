@@ -6,11 +6,18 @@ export function proxy(request: NextRequest) {
 
     const pathname = request.nextUrl.pathname;
 
-    const authRoutes = ["/sign-in", "/sign-up"];
+    const authRoutes = ["/sign-in", "/sign-up", "/reset-password"];
+
+    const longAuthUrls = ['/verify-email',];
 
     const isAuthRoute = authRoutes.includes(pathname);
 
-    if ((pathname.startsWith('/account') || pathname.startsWith('/admin') || pathname === "/wishlist") && !session) {
+    const isLongAuthRoute = longAuthUrls.some(path => pathname.includes(path));
+
+    const protectedRoutes = ['/account', '/admin', '/wishlist', '/checkout', '/update-password', '/cart'];
+    const isProtectedRoute = protectedRoutes.some(path => pathname.startsWith(path));
+
+    if (isProtectedRoute && !session) {
         const loginUrl = new URL("/sign-in", request.url);
 
         loginUrl.searchParams.set(
@@ -22,7 +29,7 @@ export function proxy(request: NextRequest) {
     }
 
 
-    if (isAuthRoute && session) {
+    if ((isAuthRoute || isLongAuthRoute) && session) {
         return NextResponse.redirect(new URL("/products", request.url));
     }
     return NextResponse.next();
@@ -34,10 +41,10 @@ export const config = {
         "/admin/:path*",
         "/sign-in",
         "/sign-up",
-        "/verify-email",
         "/reset-password",
         "/update-password",
         "/checkout",
         "/wishlist",
+        "/cart",
     ],
 };

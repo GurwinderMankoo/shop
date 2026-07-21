@@ -20,6 +20,7 @@ export async function signin(prevState: SigninFormState, data: FormData): Promis
     if (!result.success) {
         return {
             success: false,
+            message: 'Please Enter Email and Password',
             errors: result.error.flatten().fieldErrors,
             values: {
                 email: emailReceived,
@@ -42,6 +43,7 @@ export async function signin(prevState: SigninFormState, data: FormData): Promis
     if (!existingUser) {
         return {
             success: false,
+            message: 'Please create an account to login',
             errors: {
                 email: ["User does not exist"]
             }
@@ -56,6 +58,7 @@ export async function signin(prevState: SigninFormState, data: FormData): Promis
     if (!isPasswordCorrect) {
         return {
             success: false,
+            message: 'Please enter a valid email and password',
             errors: {
                 email: ['Please provide a valid email'],
                 password: ["Incorrect password"]
@@ -84,6 +87,7 @@ export async function signin(prevState: SigninFormState, data: FormData): Promis
 
         return {
             success: false,
+            message: 'Please verify your email. A email sent on your email address',
             errors: {
                 email: ["Please verify your email. A email sent on your email address"]
             }
@@ -97,6 +101,7 @@ export async function signin(prevState: SigninFormState, data: FormData): Promis
         success: true,
         errors: {},
         user: {
+
             id: existingUser.id,
             email: existingUser.email,
             firstName: existingUser.firstName,

@@ -1,8 +1,11 @@
+import { Decimal } from "@prisma/client/runtime/library";
+
 export function formatCurrency(
-    amount: number,
+    amount: number | Decimal,
     currency: string = "INR",
     locale: string = "en-IN"
 ) {
+    amount = Number(amount);
     return new Intl.NumberFormat(locale, {
         style: "currency",
         currency,
@@ -38,4 +41,12 @@ export function formatLastChanged(pastDate: Date) {
         return `Last changed ${rtf.format(Math.round(elapsed / msPerYear), 'year')}`;
     }
 
+}
+
+export function encodeState(state: any) {
+    return Buffer.from(JSON.stringify(state)).toString("base64");
+}
+
+export function decodeState(state: string) {
+    return JSON.parse(Buffer.from(state, "base64").toString());
 }
