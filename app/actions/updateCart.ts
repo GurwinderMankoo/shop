@@ -5,75 +5,118 @@ import { getCurrentUser } from "@/lib/queries/getCurrentUser";
 import { revalidatePath } from "next/cache";
 
 
+export async function getOrCreateCart(userId: string) {
+    let cart = await prisma.cart.findUnique({
+        where: {
+            userId
+        },
+        include: {
+            items: {
+                include: {
+                    productVariant: true
+                }
+            }
+        }
+    })
+
+    if (!cart) {
+        cart = await prisma.cart.create({
+            data: {
+                userId
+            }
+        })
+    }
+
+    return cart
+}
+
+export async function validateVariant(id: string) {
+    const variant = await prisma.productVariant.findUnique({
+        where: { id }
+    });
+
+    if (!variant) {
+        throw new Error("Product not found");
+    }
+
+    return variant;
+}
+
+export async function upsertCartItem(
+    cartId: string,
+    variantId: string,
+    quantity: number
+) {
+    return prisma.cartItem.upsert({
+        where: {
+            cartId_productVariantId: {
+                cartId,
+                productVariantId: variantId
+            }
+        },
+        update: {
+            quantity: {
+                increment: quantity
+            }
+        },
+        create: {
+            cartId,
+            productVariantId: variantId,
+            quantity
+        }
+    });
+}
+
+export async function recalculateCart(cartId: string) {
+    const cart = await prisma.cart.findUnique({
+        where: { id: cartId },
+        include: {
+            items: {
+                include: {
+                    productVariant: true
+                }
+            }
+        }
+    });
+
+    if (!cart) return;
+
+    const subtotal = cart.items.reduce((sum, item) => {
+        return sum + Number(item.productVariant.price) * item.quantity;
+    }, 0);
+
+    const tax = subtotal * 0.1;
+    const shipping = subtotal > 100 ? 0 : 10;
+    const total = subtotal + tax + shipping;
+
+    await prisma.cart.update({
+        where: { id: cartId },
+        data: {
+            subtotal,
+            tax,
+            shipping,
+            total
+        }
+    });
+}
+
 export async function addToCart(variantId: string, quantity: number) {
     try {
         const user = await getCurrentUser();
 
-        if (!user || !variantId) {
-            throw new Error("Unauthorized");
-        }
+        if (!user) throw new Error("Unauthorized");
 
-        const [variant, cartItem] = await Promise.all([
-            prisma.productVariant.findUnique({
-                where: {
-                    id: variantId
-                },
-                select: {
-                    id: true,
-                    stock: true
-                }
-            }),
-            prisma.cart.findUnique({
-                where: {
-                    userId_variantId: {
-                        userId: user.id,
-                        variantId,
-                    },
-                },
-            })
-        ])
+        await validateVariant(variantId);
 
+        console.log('User ID ==>', user.id)
 
-        if (!variant) {
-            throw new Error("Product not found");
-        }
+        const cart = await getOrCreateCart(user.id);
 
-        const newCartItem = cartItem ? cartItem.quantity + quantity : quantity
+        await upsertCartItem(cart.id, variantId, quantity);
 
-        if (newCartItem > variant.stock) {
-            throw new Error(`Only ${variant.stock} items available.`);
-        }
+        await recalculateCart(cart.id);
 
-        if (cartItem) {
-            const data = prisma.cart.update({
-                where: {
-                    id: cartItem.id
-                },
-                data: {
-                    quantity: cartItem.quantity + quantity
-                }
-            })
-
-            return {
-                success: true,
-                error: '',
-                data
-            }
-        }
-
-        const data = await prisma.cart.create({
-            data: {
-                userId: user.id,
-                variantId: variantId,
-                quantity,
-            },
-        });
-
-        return {
-            success: true,
-            error: '',
-            data
-        }
+        return { success: true, error: '' };
     } catch (error) {
         return {
             success: false,
@@ -81,9 +124,7 @@ export async function addToCart(variantId: string, quantity: number) {
             data: {}
         }
     }
-
 }
-
 
 export async function removeFromCart(variantId: string) {
     try {
@@ -93,30 +134,29 @@ export async function removeFromCart(variantId: string) {
             throw new Error('🔒 Please log in to continue. ⭐')
         }
 
-
-        const variant = await prisma.productVariant.findUnique({
+        const cart = await prisma.cart.findUnique({
             where: {
-                id: variantId
+                userId: user.id
             },
-            select: {
-                id: true,
-                stock: true
-            }
         })
 
-
-        if (!variant) {
-            throw new Error("Product not found");
+        if (!cart) {
+            throw new Error("Cart not found");
         }
 
-        const data = await prisma.cart.delete({
-            where: {
-                userId_variantId: {
-                    userId: user.id,
-                    variantId,
-                },
-            },
-        });
+
+        const data = await prisma.$transaction(async (tx) => {
+            await tx.cartItem.delete({
+                where: {
+                    cartId_productVariantId: {
+                        cartId: cart.id,
+                        productVariantId: variantId
+                    }
+                }
+            }),
+                recalculateCart(cart.id)
+        })
+
         revalidatePath("/cart")
         return {
             success: true,

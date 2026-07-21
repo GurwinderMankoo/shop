@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/helper";
+import Checkout from "./Checkout";
 
 type CartSummaryProps = {
     subtotal: number;
@@ -52,12 +53,7 @@ export function CartSummary({
                     <span>{formatCurrency(total)}</span>
                 </div>
 
-                <Button
-                    className="w-full"
-                    size="lg"
-                >
-                    Proceed to Checkout
-                </Button>
+                <Checkout />
 
             </CardContent>
 

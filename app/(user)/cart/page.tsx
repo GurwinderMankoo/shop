@@ -4,7 +4,9 @@ import { CartSummary } from "./_components/CartSummary";
 import { EmptyCart } from "./_components/EmptyCart";
 
 export default async function CartPage() {
-    const cart = await getCart()
+    const cartData = await getCart()
+
+    const cart = cartData[0] ?? {}
 
     return (
         <div className="container mx-auto py-8">
@@ -24,7 +26,7 @@ export default async function CartPage() {
                     ))}
                 </div>
 
-                <CartSummary {...cart.summary} />
+                <CartSummary {...cart} />
 
             </div>
                 :

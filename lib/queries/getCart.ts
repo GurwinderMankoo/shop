@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { prisma } from "../prisma";
 import { getCurrentUser } from "./getCurrentUser";
 
@@ -17,53 +18,75 @@ export async function getCart() {
         }
     }
 
-    const items = await prisma.cart.findMany({
+    return await prisma.cart.findMany({
         where: {
             userId: user.id
         },
         include: {
-            variant: {
+            items: {
                 include: {
-                    product: true
+                    productVariant: {
+                        include: {
+                            product: true
+                        }
+                    }
                 }
             }
         }
     })
 
-    const subtotal = items.reduce((total, item) => total + (Number(item.variant.price) * item.quantity), 0);
-
-    return {
-        items: items.map(item => ({
-            ...item,
-            variant: {
-                ...item.variant,
-                price: Number(item.variant.price),
-                comparePrice: item.variant.comparePrice ? Number(item.variant.comparePrice) : null,
-                product: item.variant.product
-            }
-        })),
-        summary: {
-            subtotal,
-            shipping: subtotal > 50 ? 0 : 4.99,
-            tax: subtotal * 0.2,
-            total: subtotal + 4.99 + (subtotal * 0.2)
-        }
-    }
-
 }
 
 
 export const getCartItemsCount = async () => {
-    const user = await getCurrentUser();
+    try {
+        const user = await getCurrentUser();
 
-    if (!user) {
-        return 0;
+        if (!user) {
+            return 0;
+        }
+
+        const result = await prisma.cartItem.aggregate({
+            where: {
+                cart: {
+                    userId: user.id
+                }
+            },
+            _count: {
+                _all: true,
+            },
+        })
+
+        return result._count._all;
+
+    } catch (error) {
+        console.log(error);
     }
 
-    return await prisma.cart.count({
-        where: {
-            userId: user.id
-        }
-    })
 
+}
+
+export const getCartBySession = async (sessionId: string) => {
+    const cart = await prisma.cart.findFirst({
+        where: {
+            stripeCheckoutSessionId: sessionId,
+        },
+        include: {
+            items: {
+                include: {
+                    productVariant: {
+                        include: {
+                            product: true
+                        }
+                    },
+                },
+            },
+        },
+    });
+
+    if (!cart) {
+        redirect("/");
+    }
+
+    return cart
 }
