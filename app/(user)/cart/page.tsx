@@ -4,9 +4,7 @@ import { CartSummary } from "./_components/CartSummary";
 import { EmptyCart } from "./_components/EmptyCart";
 
 export default async function CartPage() {
-    const cartData = await getCart()
-
-    const cart = cartData[0] ?? {}
+    const cart = await getCart()
 
     return (
         <div className="container mx-auto py-8">
@@ -15,7 +13,7 @@ export default async function CartPage() {
                 Shopping Cart
             </h1>
 
-            {cart?.items?.length > 0 ? <div className="grid gap-8 lg:grid-cols-[1fr_350px]">
+            {cart.items.length > 0 ? <div className="grid gap-8 lg:grid-cols-[1fr_350px]">
 
                 <div className="space-y-4">
                     {cart.items.map(item => (
@@ -26,7 +24,12 @@ export default async function CartPage() {
                     ))}
                 </div>
 
-                <CartSummary {...cart} />
+                <CartSummary
+                    subtotal={cart.subtotal}
+                    shipping={cart.shipping}
+                    tax={cart.tax}
+                    total={cart.total}
+                />
 
             </div>
                 :

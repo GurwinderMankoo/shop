@@ -16,7 +16,7 @@ export default function UserMenuMobile({ children }: { children: React.ReactNode
             {user?.id ?
                 <nav className="flex flex-col gap-4">
                     <div className="mb-3 flex flex-col items-center justify-center text-center">
-                        {user && <Link href="/account/profile"><UserAvatar initials={initials} /></Link>}
+                        {user && <Link href="/account/profile"><UserAvatar image={user.image} initials={initials} firstName={user.firstName} /></Link>}
                         <UserDetails
                             firstName={user.firstName}
                             lastName={user.lastName}

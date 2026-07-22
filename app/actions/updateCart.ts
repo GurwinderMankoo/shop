@@ -24,6 +24,13 @@ export async function getOrCreateCart(userId: string) {
         cart = await prisma.cart.create({
             data: {
                 userId
+            },
+            include: {
+                items: {
+                    include: {
+                        productVariant: true
+                    }
+                }
             }
         })
     }
@@ -31,6 +38,13 @@ export async function getOrCreateCart(userId: string) {
     return cart
 }
 
+type VariantWithProduct = Prisma.ProductVariantGetPayload<{ include: { product: true } }>;
+
+// Overload: when includeProduct is true, return type includes `product` relation
+export async function validateVariant(id: string, includeProduct: true): Promise<VariantWithProduct>;
+// Overload: when includeProduct is false or omitted, return base variant type
+export async function validateVariant(id: string, includeProduct?: false): Promise<Prisma.ProductVariantGetPayload<{}>>;
+// Implementation
 export async function validateVariant(id: string, includeProduct = false) {
     const args: Prisma.ProductVariantFindUniqueArgs = {
         where: { id },
@@ -117,9 +131,9 @@ export async function addToCart(variantId: string, quantity: number) {
 
         await validateVariant(variantId);
 
-        console.log('User ID ==>', user.id)
-
         const cart = await getOrCreateCart(user.id);
+
+        if (!cart) throw new Error("Cart not found");
 
         await upsertCartItem(cart.id, variantId, quantity);
 
