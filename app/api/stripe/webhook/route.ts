@@ -35,7 +35,7 @@ export async function POST(req: Request) {
         const cartId = session.metadata?.cartId;
         const orderId = session.metadata?.orderId;
 
-        if (!userId || !cartId || !orderId) {
+        if (!userId || !orderId) {
             return new Response('No user or cart id', { status: 400 });
         }
 
@@ -79,28 +79,29 @@ export async function POST(req: Request) {
                 });
             }
 
-            //Delete the cart items
-            await tx.cartItem.deleteMany({
-                where: {
-                    cartId: cartId
-                }
-            })
+            if (cartId) {
+                //Delete the cart items
+                await tx.cartItem.deleteMany({
+                    where: {
+                        cartId: cartId
+                    }
+                })
 
-            //Delete the cart
-            await tx.cart.update({
-                where: {
-                    id: cartId
-                },
-                data: {
-                    subtotal: 0,
-                    total: 0,
-                    discount: 0,
-                    shipping: 0,
-                    tax: 0,
-                    couponId: null,
-                },
-            })
-
+                //Delete the cart
+                await tx.cart.update({
+                    where: {
+                        id: cartId
+                    },
+                    data: {
+                        subtotal: 0,
+                        total: 0,
+                        discount: 0,
+                        shipping: 0,
+                        tax: 0,
+                        couponId: null,
+                    },
+                })
+            }
         })
 
         if (user && order) {

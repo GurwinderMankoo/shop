@@ -273,13 +273,13 @@ model CartItem {
 // REVIEWS
 // =====================
 model Review {
-  id        String   @id @default(cuid())
-  rating    Int      // 1-5 stars
-  comment   String
-  
+  id      String @id @default(cuid())
+  rating  Int // 1-5 stars
+  comment String
+
   userId    String
   productId String
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
