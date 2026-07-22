@@ -1,5 +1,6 @@
 import { prisma } from "../prisma";
 import { getCurrentUser } from "./getCurrentUser";
+import { unstable_cache } from "next/cache";
 
 export type ReviewWithUser = {
     id: string;
@@ -17,7 +18,7 @@ export type ReviewWithUser = {
     };
 };
 
-export async function getProductReviews(productId: string) {
+async function getProductReviewsImpl(productId: string) {
     try {
         const reviews = await prisma.review.findMany({
             where: {
@@ -51,6 +52,15 @@ export async function getProductReviews(productId: string) {
         };
     }
 }
+
+export const getProductReviews = unstable_cache(
+    async (productId: string) => getProductReviewsImpl(productId),
+    ['product-reviews'],
+    {
+        revalidate: 600,
+        tags: ['reviews'],
+    }
+);
 
 export async function getUserReview(productId: string) {
     try {
@@ -87,7 +97,7 @@ export async function getUserReview(productId: string) {
     }
 }
 
-export async function getProductReviewStats(productId: string) {
+async function getProductReviewStatsImpl(productId: string) {
     try {
         const stats = await prisma.review.aggregate({
             where: {
@@ -140,3 +150,12 @@ export async function getProductReviewStats(productId: string) {
         };
     }
 }
+
+export const getProductReviewStats = unstable_cache(
+    async (productId: string) => getProductReviewStatsImpl(productId),
+    ['product-review-stats'],
+    {
+        revalidate: 600,
+        tags: ['reviews'],
+    }
+);

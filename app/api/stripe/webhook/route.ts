@@ -1,6 +1,7 @@
 import { orderSummaryEmail } from "@/lib/auth/sendEmail";
 import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
+import { Prisma } from "@prisma/client";
 
 export async function POST(req: Request) {
     const body = await req.text();
@@ -45,11 +46,11 @@ export async function POST(req: Request) {
             },
         });
 
-        let order
 
-        await prisma.$transaction(async (tx) => {
+
+        const order = await prisma.$transaction(async (tx) => {
             //update order
-            order = await tx.order.update({
+            const order = await tx.order.update({
                 where: {
                     id: orderId,
                 },
@@ -102,10 +103,13 @@ export async function POST(req: Request) {
                     },
                 })
             }
+
+            return order
         })
 
         if (user && order) {
-            orderSummaryEmail(user.email, user.name, order.id, order.total);
+            const name = `${user.firstName} ${user.lastName}`
+            orderSummaryEmail(user.email, name, order.id, Number(order.total));
         }
     }
 

@@ -2,9 +2,9 @@
 
 import { Search } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { KeyboardEvent, useState } from "react";
+import { KeyboardEvent, Suspense, useState } from "react";
 
-export default function ProductSearch() {
+export function ProductSearchMain() {
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -40,5 +40,14 @@ export default function ProductSearch() {
                 />
             </div>
         </div>
+    )
+}
+
+
+export default function ProductSearch() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ProductSearchMain />
+        </Suspense>
     )
 }

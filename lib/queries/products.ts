@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../prisma";
+import { unstable_cache } from "next/cache";
 
 
 type GetProductsParams = {
@@ -12,7 +13,7 @@ type GetProductsParams = {
     search?: string
 }
 
-export async function getProducts({ page = 1, limit = 10, category, sort, minPrice, maxPrice, search }: GetProductsParams) {
+async function getProductsImpl({ page = 1, limit = 10, category, sort, minPrice, maxPrice, search }: GetProductsParams) {
 
     const skip = (page - 1) * limit;
     const where: Prisma.ProductWhereInput = {};
@@ -27,11 +28,13 @@ export async function getProducts({ page = 1, limit = 10, category, sort, minPri
             {
                 name: {
                     contains: search,
+                    mode: "insensitive",
                 },
             },
             {
                 description: {
                     contains: search,
+                    mode: "insensitive",
                 },
             },
         ];
@@ -145,9 +148,7 @@ export async function getProducts({ page = 1, limit = 10, category, sort, minPri
     };
 }
 
-
-export async function getProduct(slug: string) {
-
+async function getProductImpl(slug: string) {
     try {
         const product = await prisma.product.findUnique({
             where: {
@@ -205,12 +206,22 @@ export async function getProduct(slug: string) {
             data: null
         }
     }
-
-
 }
 
-async function wait(ms: number) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-    });
-}
+export const getProducts = unstable_cache(
+    async (params: GetProductsParams) => getProductsImpl(params),
+    ['products'],
+    {
+        revalidate: 3600,
+        tags: ['products'],
+    }
+);
+
+export const getProduct = unstable_cache(
+    async (slug: string) => getProductImpl(slug),
+    ['product'],
+    {
+        revalidate: 3600,
+        tags: ['products'],
+    }
+);

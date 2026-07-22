@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 export default async function CartButton() {
 
-    const cartItems = await getCartItemsCount();
+    const cartItems = await getCartItemsCount() ?? 0;
 
 
     return (

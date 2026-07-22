@@ -24,7 +24,7 @@ export default function ProductDetails({ product }: { product: Product }) {
     const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
 
     const selectedOptions = useMemo(() => {
-        return selectedVariant.optionValues.reduce<Record<string, string>>((acc, { optionValue }) => {
+        return selectedVariant?.optionValues?.reduce<Record<string, string>>((acc, { optionValue }) => {
 
             acc[optionValue.option.name] = optionValue.value
             return acc;

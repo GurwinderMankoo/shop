@@ -28,9 +28,9 @@ export default function VerifyEmailPage() {
     const hasVerified = useRef(false);
     const [pending, startTransition] = useTransition();
     const [loading, setLoading] = useState(false);
-    const [state, setState] = useState({
+    const [state, setState] = useState<{ success: boolean; error: string | null }>({
         success: false,
-        error: "",
+        error: null,
     })
 
 
@@ -42,6 +42,8 @@ export default function VerifyEmailPage() {
             const result = isUpdateEmail
                 ? await verifyEmail(token)
                 : await verifyEmailAndSignIn(token);
+
+
 
             setState(result);
             setLoading(false);

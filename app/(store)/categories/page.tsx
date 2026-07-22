@@ -2,9 +2,18 @@ import CategoryCard from "@/components/shared/categories/CategoryCard";
 import Headers from "@/components/shared/Headers";
 import { getCategories } from "@/lib/queries/categories";
 
+type Category = {
+    id: string;
+    name: string;
+    slug: string;
+    imageUrl: string | null;
+    isActive: boolean;
+}
+
+
 export default async function CategoriesPage() {
 
-    const categories = await getCategories();
+    const categories: Category[] = await getCategories();
 
 
     return (
@@ -30,7 +39,7 @@ export default async function CategoriesPage() {
                             "
             >
 
-                {categories.map((category) => (
+                {categories.map((category: Category) => (
                     <CategoryCard
                         key={category.id}
                         {...category}

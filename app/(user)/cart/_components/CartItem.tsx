@@ -4,24 +4,10 @@ import { Card } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/helper";
 import CartQuantityButtons from "./CartQuantityButtons";
 import RemoveCartButton from "./RemoveCartButton";
+import { CartItemData } from "@/lib/queries/getCart";
 
 type CartItemProps = {
-    item: {
-        id: string;
-        quantity: number;
-        variantId: string;
-        productVariant: {
-            id: string;
-            name: string;
-            price: number;
-            product: {
-                id: string;
-                name: string;
-                slug: string;
-                imageUrl: string | null;
-            };
-        };
-    };
+    item: CartItemData;
 };
 
 export function CartItem({ item }: CartItemProps) {
