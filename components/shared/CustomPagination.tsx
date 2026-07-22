@@ -9,6 +9,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useTopLoader } from "nextjs-toploader";
 
 type Props = {
     currentPage: number;
@@ -19,9 +20,11 @@ export default function CustomPagination({ currentPage, totalPages }: Props) {
     const router = useRouter();
 
     const searchParams = useSearchParams();
+    const loader = useTopLoader();
 
 
     const navigateTo = (page: number) => {
+        loader.start();
         const params = new URLSearchParams(
             searchParams.toString()
         );

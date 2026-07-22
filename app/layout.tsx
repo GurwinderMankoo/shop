@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { getCurrentUser } from "@/lib/queries/getCurrentUser";
 import AuthProvider from "@/components/Provider/AuthProvider";
 import { Toaster } from "sonner";
+import NextTopLoader from "nextjs-toploader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,11 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <NextTopLoader
+          color="#2563eb"
+          height={3}
+          showSpinner={false}
+        />
         <AuthProvider userState={user}>
           <Navbar />
           {children}
