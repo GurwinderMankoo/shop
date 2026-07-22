@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SlidersHorizontal } from "lucide-react";
+import { useTopLoader } from "nextjs-toploader";
 
 
 const SORT_OPTIONS = [
@@ -37,7 +38,7 @@ export default function ProductFilterContent({
 
     const router = useRouter();
     const searchParams = useSearchParams();
-
+    const loader = useTopLoader();
 
     const currentCategory =
         searchParams.get("category") ?? "";
@@ -66,7 +67,7 @@ export default function ProductFilterContent({
 
         params.set("page", "1");
 
-
+        loader.start();
         router.push(
             `/products?${params.toString()}`
         );
