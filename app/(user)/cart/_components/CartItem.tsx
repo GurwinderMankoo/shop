@@ -14,12 +14,12 @@ export function CartItem({ item }: CartItemProps) {
     const total = item.quantity * item.productVariant.price;
 
     return (
-        <Card className="p-4">
-            <div className="flex flex-col gap-4 sm:flex-row">
+        <Card className="p-3 md:p-4">
+            <div className="flex gap-3 md:gap-4">
 
                 <Link
                     href={`/products/${item.productVariant.product.slug}`}
-                    className="relative h-28 w-28 overflow-hidden rounded-lg bg-muted"
+                    className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-muted sm:h-28 sm:w-28"
                 >
                     {item.productVariant.product.imageUrl && (
                         <Image
@@ -31,27 +31,25 @@ export function CartItem({ item }: CartItemProps) {
                     )}
                 </Link>
 
-                <div className="flex flex-1 flex-col">
+                <div className="flex min-w-0 flex-1 flex-col">
 
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-start justify-between gap-2">
 
-                        <div>
+                        <div className="min-w-0">
 
                             <Link
                                 href={`/products/${item.productVariant.product.slug}`}
-                                className="font-semibold hover:underline"
+                                className="text-sm font-semibold leading-tight hover:underline sm:text-base line-clamp-2"
                             >
                                 {item.productVariant.product.name}
                             </Link>
 
-                            <p className="mt-1 text-sm text-muted-foreground">
+                            <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">
                                 {item.productVariant.name}
                             </p>
 
-                            <p className="mt-2 font-semibold">
-                                {
-                                    formatCurrency(item.productVariant.price)
-                                }
+                            <p className="mt-1.5 text-sm font-semibold sm:text-base">
+                                {formatCurrency(item.productVariant.price)}
                             </p>
 
                         </div>
@@ -60,13 +58,11 @@ export function CartItem({ item }: CartItemProps) {
 
                     </div>
 
-                    <div className="mt-6 flex items-center justify-between">
+                    <div className="mt-auto flex items-center justify-between pt-3 md:pt-4">
 
                         <CartQuantityButtons quantity={item.quantity} id={item.productVariant.id} />
-                        <p className="text-lg font-bold">
-                            {
-                                formatCurrency(total)
-                            }
+                        <p className="text-base font-bold sm:text-lg">
+                            {formatCurrency(total)}
                         </p>
 
                     </div>

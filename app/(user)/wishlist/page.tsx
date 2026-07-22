@@ -1,4 +1,5 @@
 import Headers from "@/components/shared/Headers";
+import PageLayout from "@/components/shared/PageLayout";
 import { EmptyWishlist } from "./_components/EmptyWishlist";
 import { getWishlist } from "@/lib/queries/getWishlist";
 import { ProductCard } from "@/app/(store)/products/_components/ProductCard";
@@ -8,7 +9,7 @@ export default async function page() {
     let wishlist = await getWishlist();
 
     return (
-        <div className="container mx-auto py-8">
+        <PageLayout>
 
             <Headers
                 title="My Wishlist"
@@ -16,7 +17,7 @@ export default async function page() {
             />
 
             {
-                wishlist.length > 0 ? <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                wishlist.length > 0 ? <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
                     {wishlist.map(({ product }, index, arr) => (
                         <Link
                             href={`/products/${product.id}`}
@@ -28,6 +29,6 @@ export default async function page() {
                 </div> : <EmptyWishlist />
             }
 
-        </div>
+        </PageLayout>
     )
 }

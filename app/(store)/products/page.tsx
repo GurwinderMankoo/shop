@@ -1,7 +1,11 @@
+import { Suspense } from "react";
 import CustomPagination from "@/components/shared/CustomPagination";
+import PageLayout from "@/components/shared/PageLayout";
 import { getProducts } from "@/lib/queries/products";
 import Link from "next/link";
 import ProductFilters from "./_components/ProductFilters";
+import ProductsSearch from "./_components/ProductsSearch";
+import MobileFilter from "./_components/MobileFilter";
 import { getCategories } from "@/lib/queries/categories";
 import { ProductCard } from "./_components/ProductCard";
 import { Button } from "@/components/ui/button";
@@ -49,45 +53,60 @@ export default async function ProductsPage({ searchParams }: ProductPageProps) {
   const wishlistSets = new Set(wishlist.map((item) => item.productId));
 
   return (
-    <div className="container mx-auto py-10">
+    <PageLayout>
 
-      <h1 className="text-3xl font-bold mb-8">
+      <h1 className="mb-6 text-2xl font-bold md:text-3xl md:mb-8">
         Products
       </h1>
+
       <div className="grid gap-8 lg:grid-cols-[250px_1fr]">
         <ProductFilters categories={categories} />
 
-        {products.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {products.map((product) => (
-              <Link
-                href={`/products/${product.slug}`}
-                key={product.id}
-              >
-                <ProductCard {...product} isWishListed={wishlistSets.has(product.id) || false} />
-              </Link>
-            ))}
+        <div className="flex flex-col gap-6">
+
+          {/* Mobile: Search + Filter row */}
+          <div className="flex items-center gap-2 lg:hidden">
+            <div className="flex-1">
+              <Suspense fallback={null}>
+                <ProductsSearch />
+              </Suspense>
+            </div>
+            <MobileFilter categories={categories} />
           </div>
-        ) : (
-          <div className="flex min-h-[500px] w-full flex-col items-center justify-center rounded-xl border border-dashed">
-            <SearchX className="h-12 w-12 text-muted-foreground" />
 
-            <h2 className="mt-4 text-xl font-semibold">
-              No products found
-            </h2>
+          {products.length > 0 ? (
+            <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+              {products.map((product) => (
+                <Link
+                  href={`/products/${product.slug}`}
+                  key={product.id}
+                >
+                  <ProductCard {...product} isWishListed={wishlistSets.has(product.id) || false} />
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="flex min-h-[500px] w-full flex-col items-center justify-center rounded-xl border border-dashed">
+              <SearchX className="h-12 w-12 text-muted-foreground" />
 
-            <p className="mt-2 max-w-md text-center text-sm text-muted-foreground">
-              We couldn't find any products matching your current
-              filters. Try adjusting your search criteria.
-            </p>
+              <h2 className="mt-4 text-xl font-semibold">
+                No products found
+              </h2>
 
-            <Button asChild className="mt-6">
-              <Link href="/products">
-                Clear Filters
-              </Link>
-            </Button>
-          </div>
-        )}
+              <p className="mt-2 max-w-md text-center text-sm text-muted-foreground">
+                We couldn't find any products matching your current
+                filters. Try adjusting your search criteria.
+              </p>
+
+              <Button asChild className="mt-6">
+                <Link href="/products">
+                  Clear Filters
+                </Link>
+              </Button>
+            </div>
+          )}
+
+        </div>
 
       </div>
 
@@ -99,6 +118,6 @@ export default async function ProductsPage({ searchParams }: ProductPageProps) {
         />
       </div>}
 
-    </div>
+    </PageLayout>
   );
 }

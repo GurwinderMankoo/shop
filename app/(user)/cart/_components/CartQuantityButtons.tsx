@@ -27,26 +27,26 @@ export default function CartQuantityButtons({ quantity, id }: { quantity: number
 
     }
     return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
 
             <Button
                 size="icon"
                 variant="outline"
                 disabled={quantity === 1 || lodaing}
-                className='cursor-pointer'
+                className='h-9 w-9 cursor-pointer sm:h-10 sm:w-10'
                 onClick={(e) => updateCart(e, id, -1)}
             >
                 <Minus className="h-4 w-4" />
             </Button>
 
-            <span className="w-8 text-center">
+            <span className="flex h-9 w-9 items-center justify-center text-sm font-medium sm:h-10 sm:w-10 sm:text-base">
                 {quantity}
             </span>
 
             <Button
                 size="icon"
                 variant="outline"
-                className='cursor-pointer'
+                className='h-9 w-9 cursor-pointer sm:h-10 sm:w-10'
                 onClick={(e) => updateCart(e, id, 1)}
                 disabled={lodaing}
             >

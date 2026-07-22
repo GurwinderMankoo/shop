@@ -144,12 +144,14 @@ export function SignInUpCard({ type = "sign-in", onNavigate, action, state }: Pr
                                 Password
                             </Label>
 
-                            {type === "sign-in" && <button
-                                type="button"
-                                className="text-xs text-primary hover:underline"
-                            >
-                                Forgot Password?
-                            </button>}
+                            {type === "sign-in" && (
+                                <Link
+                                    href="/forgot-password"
+                                    className="text-xs text-primary hover:underline"
+                                >
+                                    Forgot Password?
+                                </Link>
+                            )}
                         </div>
 
                         <InputField

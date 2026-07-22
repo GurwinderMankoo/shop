@@ -23,7 +23,8 @@ export default function RemoveCartButton({ variantId }: { variantId: string }) {
             size="icon"
             variant="ghost"
             onClick={(event) => removeHandler(event, variantId)}
-            className='cursor-pointer'
+            className='h-9 w-9 shrink-0 cursor-pointer sm:h-10 sm:w-10'
+            title="Remove item"
         >
             <Trash2 className="h-4 w-4" />
         </Button>
