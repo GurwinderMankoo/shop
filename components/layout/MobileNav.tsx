@@ -2,10 +2,34 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Heart, HeartHandshake, HomeIcon, ListSortDescending, Menu, PackageSearch, PackageSearchIcon, User, X } from "lucide-react";
+import { Heart, HomeIcon, ListSortDescending, LogOut, Menu, PackageSearch, User, X } from "lucide-react";
 
 import UserMenuMobile from "./UserMenuMobile";
 import CartButton from "./_CartButton";
+import { useAuth } from "../Provider/AuthProvider";
+
+function SignOutButton({ closeMenu }: { closeMenu: () => void }) {
+    const auth = useAuth();
+    const user = auth?.user
+    const logout = auth?.logout
+
+    if (!user?.id) return null;
+
+    return (
+        <div className="border-t p-4">
+            <button
+                onClick={async () => {
+                    await logout?.();
+                    closeMenu();
+                }}
+                className="flex w-full items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
+            >
+                <LogOut className="h-4 w-4" />
+                Sign Out
+            </button>
+        </div>
+    );
+}
 
 export default function MobileNav() {
     const [open, setOpen] = useState(false);
@@ -47,65 +71,59 @@ export default function MobileNav() {
                     </button>
                 </div>
 
-                {/* Navigation */}
-                <nav className="flex flex-col border-b p-4 overflow-auto">
-                    <UserMenuMobile>
-                        <Link
-                            href="/"
-                            onClick={closeMenu}
-                            className="rounded-md px-3 hover:bg-gray-100 flex items-center gap-2"
-                        >
-                            <HomeIcon className="h-4 w-4" />
-                            Home
-                        </Link>
+                {/* User Section */}
+                <UserMenuMobile />
 
-                        <Link
-                            href="/products"
-                            onClick={closeMenu}
-                            className="rounded-md px-3 hover:bg-gray-100 flex items-center gap-2"
-                        >
-                            <PackageSearch className="h-4 w-4" />
-                            Products
-                        </Link>
+                {/* Navigation Links */}
+                <nav className="flex flex-col p-4 overflow-auto gap-1">
+                    <Link
+                        href="/"
+                        onClick={closeMenu}
+                        className="rounded-md px-3 py-2 hover:bg-gray-100 flex items-center gap-3 text-sm font-medium transition-colors"
+                    >
+                        <HomeIcon className="h-4 w-4" />
+                        Home
+                    </Link>
 
-                        <Link
-                            href="/categories"
-                            onClick={closeMenu}
-                            className="rounded-md px-3 hover:bg-gray-100 flex items-center gap-2"
-                        >
-                            <ListSortDescending className="h-4 w-4" />
-                            Categories
-                        </Link>
+                    <Link
+                        href="/products"
+                        onClick={closeMenu}
+                        className="rounded-md px-3 py-2 hover:bg-gray-100 flex items-center gap-3 text-sm font-medium transition-colors"
+                    >
+                        <PackageSearch className="h-4 w-4" />
+                        Products
+                    </Link>
 
-                        <Link
-                            href="/deals"
-                            onClick={closeMenu}
-                            className="rounded-md px-3 hover:bg-gray-100 flex items-center gap-2"
-                        >
-                            <HeartHandshake className="h-4 w-4" />
-                            Deals
-                        </Link>
+                    <Link
+                        href="/categories"
+                        onClick={closeMenu}
+                        className="rounded-md px-3 py-2 hover:bg-gray-100 flex items-center gap-3 text-sm font-medium transition-colors"
+                    >
+                        <ListSortDescending className="h-4 w-4" />
+                        Categories
+                    </Link>
 
-                        <Link
-                            href="/contact"
-                            onClick={closeMenu}
-                            className="rounded-md px-3 hover:bg-gray-100 flex items-center gap-2"
-                        >
-                            <User className="h-4 w-4" />
-                            Contact
-                        </Link>
+                    <Link
+                        href="/contact"
+                        onClick={closeMenu}
+                        className="rounded-md px-3 py-2 hover:bg-gray-100 flex items-center gap-3 text-sm font-medium transition-colors"
+                    >
+                        <User className="h-4 w-4" />
+                        Contact
+                    </Link>
 
-                        <Link
-                            href="/wishlist"
-                            onClick={closeMenu}
-                            className="rounded-md px-3 hover:bg-gray-100 flex items-center gap-2"
-                        >
-                            <Heart className="h-4 w-4" />
-                            Wishlist
-                        </Link>
-
-                    </UserMenuMobile>
+                    <Link
+                        href="/wishlist"
+                        onClick={closeMenu}
+                        className="rounded-md px-3 py-2 hover:bg-gray-100 flex items-center gap-3 text-sm font-medium transition-colors"
+                    >
+                        <Heart className="h-4 w-4" />
+                        Wishlist
+                    </Link>
                 </nav>
+
+                {/* Sign Out at the bottom */}
+                <SignOutButton closeMenu={closeMenu} />
             </aside>
         </>
     );

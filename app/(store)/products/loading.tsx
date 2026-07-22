@@ -78,7 +78,7 @@ export default function Loading() {
 
 
                 {/* Products */}
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
                     {Array.from({ length: 10 }).map((_, i) => (
                         <ProductCardSkeleton key={i} />
                     ))}
