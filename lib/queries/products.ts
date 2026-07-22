@@ -217,11 +217,12 @@ export const getProducts = unstable_cache(
     }
 );
 
-export const getProduct = unstable_cache(
-    async (slug: string) => getProductImpl(slug),
-    ['product'],
-    {
-        revalidate: 3600,
-        tags: ['products'],
-    }
-);
+export const getProduct = (slug: string) =>
+    unstable_cache(
+        async () => getProductImpl(slug),
+        ['product', slug], // 👈 Add `slug` here! Now every product has a unique cache key
+        {
+            revalidate: 3600,
+            tags: ['products', `product-${slug}`], // Pro-tip: tag individually for fine-grained revalidation
+        }
+    )();
