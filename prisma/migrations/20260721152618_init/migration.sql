@@ -130,8 +130,6 @@ CREATE TABLE "Cart" (
     "shipping" DECIMAL NOT NULL DEFAULT 0,
     "total" DECIMAL NOT NULL DEFAULT 0,
     "tax" DECIMAL NOT NULL DEFAULT 0,
-    "stripeCheckoutSessionId" TEXT,
-    "stripeSessionExpiresAt" DATETIME,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAT" DATETIME NOT NULL,
     CONSTRAINT "Cart_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
@@ -148,6 +146,19 @@ CREATE TABLE "CartItem" (
     "updatedAT" DATETIME NOT NULL,
     CONSTRAINT "CartItem_cartId_fkey" FOREIGN KEY ("cartId") REFERENCES "Cart" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "CartItem_productVariantId_fkey" FOREIGN KEY ("productVariantId") REFERENCES "ProductVariant" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Review" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "rating" INTEGER NOT NULL,
+    "comment" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "productId" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "Review_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "Review_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -174,9 +185,12 @@ CREATE TABLE "Order" (
     "taxAmount" DECIMAL NOT NULL DEFAULT 0,
     "shippingAmount" DECIMAL NOT NULL DEFAULT 0,
     "total" DECIMAL NOT NULL,
+    "currency" TEXT NOT NULL DEFAULT 'INR',
     "couponId" TEXT,
     "couponCode" TEXT,
     "paymentIntent" TEXT,
+    "stripeCheckoutSessionId" TEXT,
+    "stripeSessionExpiresAt" DATETIME,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
     CONSTRAINT "Order_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
@@ -187,8 +201,15 @@ CREATE TABLE "OrderItem" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "orderId" TEXT NOT NULL,
     "productId" TEXT NOT NULL,
+    "variantId" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
     "price" DECIMAL NOT NULL,
+    "productName" TEXT NOT NULL,
+    "variantName" TEXT NOT NULL,
+    "image" TEXT NOT NULL,
+    "sku" TEXT,
+    "slug" TEXT,
+    "coupon" TEXT,
     CONSTRAINT "OrderItem_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
@@ -226,7 +247,31 @@ CREATE UNIQUE INDEX "Cart_userId_key" ON "Cart"("userId");
 CREATE UNIQUE INDEX "CartItem_cartId_productVariantId_key" ON "CartItem"("cartId", "productVariantId");
 
 -- CreateIndex
+CREATE INDEX "Review_productId_idx" ON "Review"("productId");
+
+-- CreateIndex
+CREATE INDEX "Review_userId_idx" ON "Review"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Review_userId_productId_key" ON "Review"("userId", "productId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Coupon_code_key" ON "Coupon"("code");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Order_paymentIntent_key" ON "Order"("paymentIntent");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Order_stripeCheckoutSessionId_key" ON "Order"("stripeCheckoutSessionId");
+
+-- CreateIndex
+CREATE INDEX "Order_userId_idx" ON "Order"("userId");
+
+-- CreateIndex
+CREATE INDEX "Order_status_idx" ON "Order"("status");
+
+-- CreateIndex
+CREATE INDEX "Order_paymentStatus_idx" ON "Order"("paymentStatus");
+
+-- CreateIndex
+CREATE INDEX "Order_createdAt_idx" ON "Order"("createdAt");

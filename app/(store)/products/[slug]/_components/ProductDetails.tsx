@@ -9,6 +9,7 @@ import VariantOptions from "./VariantOptions";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/Provider/AuthProvider";
 import { addToCart } from "@/app/actions/updateCart";
+import { buy } from "@/app/actions/checkout";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
@@ -18,6 +19,7 @@ export default function ProductDetails({ product }: { product: Product }) {
     const router = useRouter()
     const pathname = usePathname()
     const [isPending, startTransition] = useTransition();
+    const [isBuyPending, startBuyTransition] = useTransition();
 
     const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
 
@@ -77,6 +79,23 @@ export default function ProductDetails({ product }: { product: Product }) {
                 toast.error(res.error);
             }
         });
+    }
+
+
+    const handleBuy = () => {
+        try {
+            if (!user) {
+                router.push(`/sign-in?callbackUrl=${encodeURIComponent(pathname)}`);
+                return;
+            }
+
+            startBuyTransition(async () => {
+                const res = await buy(selectedVariant.id, quantity);
+            });
+
+        } catch (err) {
+            toast.error('Something went wrong!! Try later');
+        }
     }
 
     return (
@@ -143,12 +162,14 @@ export default function ProductDetails({ product }: { product: Product }) {
                     Add to Cart
                 </Button>
 
-                {/* <Button
+                <Button
                     size="lg"
                     variant="outline"
+                    onClick={handleBuy}
+                    disabled={isBuyPending}
                 >
                     Buy Now
-                </Button> */}
+                </Button>
             </div>
 
         </>

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/queries/getCurrentUser";
 import { stripe } from "@/lib/stripe";
 import { redirect } from "next/navigation";
+import { validateVariant } from "./updateCart";
 
 export async function checkout() {
     const user = await getCurrentUser();
@@ -48,7 +49,6 @@ export async function checkout() {
             ),
         },
     }));
-
 
     const order = await prisma.order.create({
         data: {
@@ -106,6 +106,84 @@ export async function checkout() {
 
     redirect(session.url!);
 
+}
+
+export async function buy(variantId: string, quantity: number) {
+    const user = await getCurrentUser();
+
+    if (!user) {
+        redirect('/sign-in');
+    }
+
+    const variant = await validateVariant(variantId, true);
+
+    const subtotal = Number(variant.price) * quantity;
+
+    const tax = subtotal * 0.1;
+    const shipping = subtotal > 100 ? 0 : 10;
+    const total = subtotal + tax + shipping;
+
+    const lineItems = [{
+        quantity: quantity,
+        price_data: {
+            currency: "INR",
+            product_data: {
+                name: variant.name,
+            },
+            unit_amount: Math.round(
+                variant.price.toNumber() * 100
+            ),
+        },
+    }];
+
+    const order = await prisma.order.create({
+        data: {
+            userId: user.id,
+            status: "PENDING",
+            paymentStatus: "PENDING",
+            total,
+            subtotal,
+            taxAmount: tax,
+            shippingAmount: shipping,
+            items: {
+                create: {
+                    productId: variant.productId,
+                    variantId: variant.id,
+                    quantity,
+                    price: variant.price,
+                    productName: variant.product.name,
+                    variantName: variant.name,
+                    // slug: variant.product.slug,
+                    sku: variant.sku,
+                    image: variant.product.imageUrl ?? ""
+                }
+            }
+        }
+    })
+
+    const session = await stripe.checkout.sessions.create({
+        mode: "payment",
+        line_items: [...lineItems],
+        success_url:
+            `${process.env.NEXT_PUBLIC_APP_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url:
+            `${process.env.NEXT_PUBLIC_APP_URL}/cart`,
+        metadata: {
+            userId: user.id,
+            orderId: order.id
+        }
+    });
+
+    await prisma.order.update({
+        where: {
+            id: order.id
+        },
+        data: {
+            stripeCheckoutSessionId: session.id
+        }
+    })
+
+    redirect(session.url!);
 }
 
 

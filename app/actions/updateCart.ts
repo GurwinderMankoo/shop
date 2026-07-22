@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/queries/getCurrentUser";
+import type { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 
@@ -30,10 +31,18 @@ export async function getOrCreateCart(userId: string) {
     return cart
 }
 
-export async function validateVariant(id: string) {
-    const variant = await prisma.productVariant.findUnique({
-        where: { id }
-    });
+export async function validateVariant(id: string, includeProduct = false) {
+    const args: Prisma.ProductVariantFindUniqueArgs = {
+        where: { id },
+    };
+
+    if (includeProduct) {
+        args.include = {
+            product: true,
+        };
+    }
+
+    const variant = await prisma.productVariant.findUnique(args);
 
     if (!variant) {
         throw new Error("Product not found");
