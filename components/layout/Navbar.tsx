@@ -5,6 +5,7 @@ import ProductSearch from "../shared/ProductSearch";
 import CartButton from "./_CartButton";
 import UserMenu from "./UserMenu";
 import MobileNav from "./MobileNav";
+import Image from "next/image";
 
 export default function Navbar() {
   return (
@@ -15,7 +16,12 @@ export default function Navbar() {
           href="/"
           className="shrink-0 text-xl font-bold tracking-tight"
         >
-          ShopSphere
+          <Image
+            alt="TheShopHub"
+            src="/logo.svg"
+            width={70}
+            height={70}
+          />
         </Link>
 
         {/* Desktop Navigation */}
