@@ -90,7 +90,9 @@ export const metadata: Metadata = {
 
   category: "shopping",
 
-
+  icons: {
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default async function RootLayout({
