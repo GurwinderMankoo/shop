@@ -103,8 +103,6 @@ export default async function RootLayout({
   modal: React.ReactNode;
 }>) {
 
-  const user = await getCurrentUser();
-
   return (
     <html
       lang="en"
@@ -116,7 +114,7 @@ export default async function RootLayout({
           height={3}
           showSpinner={false}
         />
-        <AuthProvider userState={user}>
+        <AuthProvider>
           <Navbar />
           {children}
           {modal}
