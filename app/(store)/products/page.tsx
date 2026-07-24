@@ -51,7 +51,9 @@ export default async function ProductsPage({ searchParams }: ProductPageProps) {
 
       <div className="grid gap-8 lg:grid-cols-[250px_1fr]">
         <aside className="sticky top-24 hidden h-fit rounded-xl border bg-card p-5 lg:block">
-          <ProductFilters />
+          <Suspense fallback={null}>
+            <ProductFilters />
+          </Suspense>
         </aside>
 
         <div className="flex flex-col gap-6">
@@ -104,10 +106,12 @@ export default async function ProductsPage({ searchParams }: ProductPageProps) {
 
 
       {page <= pagination.totalPages && pagination.totalPages > 1 && <div className="mt-10">
-        <CustomPagination
-          currentPage={page}
-          totalPages={pagination.totalPages}
-        />
+        <Suspense fallback={null}>
+          <CustomPagination
+            currentPage={page}
+            totalPages={pagination.totalPages}
+          />
+        </Suspense>
       </div>}
 
     </PageLayout>
