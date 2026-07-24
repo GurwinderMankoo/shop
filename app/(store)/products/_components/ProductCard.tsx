@@ -1,14 +1,28 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import { Product } from "@/types/products";
 import { formatCurrency } from "@/lib/helper";
 import DiscountBadge from "@/components/shared/DiscountBadge";
 import ProductWishlistButton from "./ProductWishlistButton";
 import ProductAddToCartButton from "./ProductAddToCartButton";
 import StarRating from "@/components/reviews/StarRating";
 
-interface ProductCardProps extends Partial<Product> {
-  isWishListed: boolean;
+type ProductCardVariant = {
+  id: string;
+  price: number | null;
+  comparePrice: number | null;
+};
+
+type ProductCardCategory = {
+  name: string;
+};
+
+interface ProductCardProps {
+  id: string;
+  name: string;
+  imageUrl: string | null;
+  slug: string;
+  category: ProductCardCategory | null;
+  variants: ProductCardVariant[];
   isFromWishlist?: boolean;
   reviewStats?: {
     averageRating: number;
@@ -16,7 +30,7 @@ interface ProductCardProps extends Partial<Product> {
   };
 }
 
-export function ProductCard({ id, name, imageUrl, category, variants, isWishListed, isFromWishlist, reviewStats }: ProductCardProps) {
+export function ProductCard({ id, name, imageUrl, category, variants, isFromWishlist, reviewStats }: ProductCardProps) {
 
 
   return (
@@ -32,8 +46,7 @@ export function ProductCard({ id, name, imageUrl, category, variants, isWishList
           fill
           className="object-cover rounded-lg"
         />
-
-        <ProductWishlistButton id={id} isWishListed={isWishListed} isFromWishlist={isFromWishlist} />
+        <ProductWishlistButton id={id} isFromWishlist={isFromWishlist} />
 
       </div>
 

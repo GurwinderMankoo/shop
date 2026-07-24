@@ -20,10 +20,10 @@ export default async function page() {
                 wishlist.length > 0 ? <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
                     {wishlist.map(({ product }, index, arr) => (
                         <Link
-                            href={`/products/${product.id}`}
+                            href={`/products/${product.slug}`}
                             key={product.id}
                         >
-                            <ProductCard {...product} isFromWishlist={true} isWishListed />
+                            <ProductCard {...product} isFromWishlist={true} />
                         </Link>
                     ))}
                 </div> : <EmptyWishlist />

@@ -1,13 +1,14 @@
 "use client"
 
-import { createContext, useCallback, useContext, useState } from "react"
+import { createContext, useCallback, useContext, useEffect, useState } from "react"
 import { logout as signout } from "../../app/actions/logout.action"
 import { useRouter } from "next/navigation"
+import { getUser } from "@/app/actions/getUser"
 
 
 type AuthProviderProps = {
     children: React.ReactNode
-    userState: User | null
+    // userState: User | null
 }
 type User = {
     id: string;
@@ -35,14 +36,23 @@ const AuthContext = createContext<UserState>(intialState)
 
 export const useAuth = () => useContext(AuthContext)
 
-const AuthProvider = ({ userState, children }: AuthProviderProps) => {
-    const [user, setUser] = useState<User | null>(userState)
+const AuthProvider = ({ children }: AuthProviderProps) => {
+    const [user, setUser] = useState<User | null>(null)
     const router = useRouter()
 
     const logout = useCallback(async () => {
         await signout();
         setUser(null)
         router.refresh()
+    }, [])
+
+
+    useEffect(() => {
+        getUser().then((user) => {
+            if (!!user) {
+                setUser(user)
+            }
+        })
     }, [])
 
     const updateUser = useCallback((updates: Partial<UserUpdates>) => {

@@ -144,3 +144,35 @@ html {
     transform: translateY(-10px);
   }
 }
+
+/* ===== Light dot-pattern texture (home page only) ===== */
+.bg-dot-pattern-home {
+  background-image: radial-gradient(#14121F 1px, transparent 1px);
+  background-size: 26px 26px;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 25%,
+    transparent 70%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 25%,
+    transparent 70%
+  );
+}
+
+/* ===== Infinite marquee ===== */
+@keyframes shophub-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-shophub-marquee {
+  animation: shophub-marquee 28s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-shophub-marquee { animation: none !important; }
+}

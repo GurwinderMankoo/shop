@@ -23,3 +23,7 @@ export const getCategories = unstable_cache(
         revalidate: 3600, // cache for 1 hour
     }
 );
+
+export const wait = async (ms: number) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
