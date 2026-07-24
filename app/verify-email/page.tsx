@@ -5,23 +5,14 @@ import { CheckCircle2, Loader2, XCircle } from "lucide-react";
 import { verifyEmail } from "../actions/verifyEmail";
 import { verifyEmailAndSignIn } from "../actions/verifyEmailAndSignIn";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { Suspense, useEffect, useRef, useState, useTransition } from "react";
 
 type VerificationState =
     | { status: "pending"; error?: never }
     | { status: "success"; error?: never }
     | { status: "error"; error: string };
 
-
-
-async function verifyToken(isUpdateEmail: boolean, token: string) {
-    if (isUpdateEmail) {
-        return await verifyEmail(token)
-    }
-    return await verifyEmailAndSignIn(token)
-}
-
-export default function VerifyEmailPage() {
+export function VerifyEmailPageMain() {
     const searchParams = useSearchParams();
     const token = searchParams.get("token");
     const isUpdateEmail = searchParams.get("isUpdateEmail") === "true";
@@ -138,4 +129,13 @@ function PendingState() {
             </div>
         </div>
     );
+}
+
+
+export default function VerifyEmailPage() {
+    return (
+        <Suspense fallback={<div></div>}>
+            <VerifyEmailPageMain />
+        </Suspense>
+    )
 }
