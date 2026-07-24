@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import SignIn from "./_SignIn";
 export default function SignInMain() {
     return (
@@ -25,7 +26,9 @@ export default function SignInMain() {
                 {/* lg:-ml-[15%] pulls the form slightly left to perfectly balance 
                   and tuck into the empty space created by the diagonal cut.
                 */}
-                <SignIn />
+                <Suspense fallback={null}>
+                    <SignIn />
+                </Suspense>
             </div>
         </div>
     )
