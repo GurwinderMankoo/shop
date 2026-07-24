@@ -3,10 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { getCurrentUser } from "@/lib/queries/getCurrentUser";
 import AuthProvider from "@/components/Provider/AuthProvider";
 import { Toaster } from "sonner";
 import NextTopLoader from "nextjs-toploader";
+import WishlistProvider from "@/components/Provider/WishlistProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -108,17 +108,22 @@ export default async function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body
+        className="min-h-full flex flex-col"
+      >
         <NextTopLoader
-          color="#2563eb"
+          color="#000"
           height={3}
           showSpinner={false}
+          easing="ease"
         />
         <AuthProvider>
-          <Navbar />
-          {children}
-          {modal}
-          <Footer />
+          <WishlistProvider>
+            <Navbar />
+            {children}
+            {modal}
+            <Footer />
+          </WishlistProvider>
         </AuthProvider>
         <Toaster
           richColors

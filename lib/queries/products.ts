@@ -14,7 +14,6 @@ type GetProductsParams = {
 }
 
 async function getProductsImpl({ page = 1, limit = 10, category, sort, minPrice, maxPrice, search }: GetProductsParams) {
-
     const skip = (page - 1) * limit;
     const where: Prisma.ProductWhereInput = {};
     if (category) {
@@ -77,19 +76,7 @@ async function getProductsImpl({ page = 1, limit = 10, category, sort, minPrice,
             take: limit,
             where,
             include: {
-                variants: {
-                    include: {
-                        optionValues: {
-                            include: {
-                                optionValue: {
-                                    include: {
-                                        option: true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
+                variants: true,
                 category: true,
             },
             orderBy
@@ -208,14 +195,15 @@ async function getProductImpl(slug: string) {
     }
 }
 
-export const getProducts = unstable_cache(
-    async (params: GetProductsParams) => getProductsImpl(params),
-    ['products'],
-    {
-        revalidate: 3600,
-        tags: ['products'],
-    }
-);
+export const getProducts = (params: GetProductsParams) =>
+    unstable_cache(
+        async () => getProductsImpl(params),
+        ['products', JSON.stringify(params)],
+        {
+            revalidate: 3600,
+            tags: ['products'],
+        }
+    )();
 
 export const getProduct = (slug: string) =>
     unstable_cache(

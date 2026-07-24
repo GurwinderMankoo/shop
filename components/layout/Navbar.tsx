@@ -8,6 +8,7 @@ import MobileNav from "./MobileNav";
 import Image from "next/image";
 
 export default function Navbar() {
+  console.log('Navbar rendered')
   return (
     <header className="sticky top-0 z-50 border-b bg-white">
       <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4">

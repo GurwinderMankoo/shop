@@ -1,15 +1,13 @@
+import { getCategories } from "@/lib/queries/categories";
 import ProductFilterContent from "./ProductFilterContent";
 
-export default function ProductFilters({
-    categories,
-}: {
-    categories: any[];
-}) {
+export default async function ProductFilters() {
+
+    const categories = await getCategories();
+
     return (
-        <aside className="sticky top-24 hidden h-fit rounded-xl border bg-card p-5 lg:block">
-            <ProductFilterContent
-                categories={categories}
-            />
-        </aside>
+        <ProductFilterContent
+            categories={categories}
+        />
     );
 }

@@ -9,7 +9,6 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const callbackUrl = searchParams.get('callbackUrl') || '/';
-    console.log(callbackUrl, 'callbackUrl');
     const secureToken = randomBytes(32).toString("hex");
 
     const cookieStore = await cookies();

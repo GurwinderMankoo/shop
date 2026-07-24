@@ -115,8 +115,7 @@ export const getCartItemsCount = async () => {
         return result._count._all;
 
     } catch (error) {
-        console.log(error);
+        // console.log(error);
+        return 0
     }
-
-
 }

@@ -5,12 +5,10 @@ import { getProducts } from "@/lib/queries/products";
 import Link from "next/link";
 import ProductFilters from "./_components/ProductFilters";
 import ProductsSearch from "./_components/ProductsSearch";
-import MobileFilter from "./_components/MobileFilter";
-import { getCategories } from "@/lib/queries/categories";
 import { ProductCard } from "./_components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { SearchX } from "lucide-react";
-import { getWishlistProductIds } from "@/lib/queries/getWishlist";
+import MobileFilterWrapper from "./_components/MobileFilterWrapper";
 
 type ProductPageProps = {
   searchParams: Promise<{
@@ -34,23 +32,15 @@ export default async function ProductsPage({ searchParams }: ProductPageProps) {
   const maxPrice = params.maxPrice ? Number(params.maxPrice) : undefined;
   const search = params.q;
 
-  const [categories, productData, wishlist] = await Promise.all([
-    getCategories(),
-    getProducts({
-      page,
-      limit,
-      category,
-      sort,
-      minPrice,
-      maxPrice,
-      search
-    }),
-    getWishlistProductIds()
-  ])
-
-  const { products, pagination } = productData
-
-  const wishlistSets = new Set(wishlist.map((item) => item.productId));
+  const { products, pagination } = await getProducts({
+    page,
+    limit,
+    category,
+    sort,
+    minPrice,
+    maxPrice,
+    search
+  })
 
   return (
     <PageLayout>
@@ -60,7 +50,9 @@ export default async function ProductsPage({ searchParams }: ProductPageProps) {
       </h1>
 
       <div className="grid gap-8 lg:grid-cols-[250px_1fr]">
-        <ProductFilters categories={categories} />
+        <aside className="sticky top-24 hidden h-fit rounded-xl border bg-card p-5 lg:block">
+          <ProductFilters />
+        </aside>
 
         <div className="flex flex-col gap-6">
 
@@ -71,7 +63,7 @@ export default async function ProductsPage({ searchParams }: ProductPageProps) {
                 <ProductsSearch />
               </Suspense>
             </div>
-            <MobileFilter categories={categories} />
+            <MobileFilterWrapper />
           </div>
 
           {products.length > 0 ? (
@@ -81,7 +73,7 @@ export default async function ProductsPage({ searchParams }: ProductPageProps) {
                   href={`/products/${product.slug}`}
                   key={product.id}
                 >
-                  <ProductCard {...product} isWishListed={wishlistSets.has(product.id) || false} />
+                  <ProductCard {...product} />
                 </Link>
               ))}
             </div>

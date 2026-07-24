@@ -15,6 +15,7 @@ type MobileFilterProps = {
 };
 
 export default function MobileFilter({ categories }: MobileFilterProps) {
+
     return (
         <Sheet>
             <SheetTrigger asChild>

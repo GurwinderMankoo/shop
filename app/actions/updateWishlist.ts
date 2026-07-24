@@ -2,12 +2,11 @@
 
 import { prisma } from "@/lib/prisma"
 import { getCurrentUser } from "@/lib/queries/getCurrentUser"
-import { cookies } from "next/headers";
+import { updateTag } from "next/cache";
 
 export async function addProductWishlist(productId: string) {
     try {
         const user = await getCurrentUser();
-        const cookieStore = await cookies();
 
         if (!user) {
 
@@ -28,6 +27,9 @@ export async function addProductWishlist(productId: string) {
                 }
             }
         })
+
+        updateTag('wishlist');
+        updateTag(`wishlist-${user.id}`);
 
         return {
             success: true,
@@ -61,6 +63,9 @@ export async function removeProductWishlist(productId: string) {
                 productId,
             },
         });
+
+        updateTag('wishlist');
+        updateTag(`wishlist-${user.id}`);
 
         return {
             success: true,
