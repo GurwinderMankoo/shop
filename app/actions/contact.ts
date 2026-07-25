@@ -63,7 +63,7 @@ export async function submitContact(
             values: { name: "", email: "", subject: "", message: "" },
         };
     } catch (error) {
-        console.error("Contact form error:", error);
+        // console.error("Contact form error:", error);
         return {
             success: false,
             errors: {
