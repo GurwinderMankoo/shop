@@ -1,7 +1,7 @@
 // app/products/loading.tsx
 
 import { Skeleton } from "@/components/ui/skeleton";
-import ProductCardSkeleton from "../(store)/products/_components/ProductCardSkeleton";
+import ProductCardSkeleton from "./_components/ProductCardSkeleton";
 
 
 export default function Loading() {
