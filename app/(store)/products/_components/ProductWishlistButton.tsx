@@ -1,13 +1,13 @@
 'use client'
+import { Heart } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useTransition, useMemo } from "react";
+import { toast } from "sonner";
 
 import { addProductWishlist, removeProductWishlist } from "@/app/actions/updateWishlist";
 import { useAuth } from "@/components/Provider/AuthProvider";
 import { useWishlist } from "@/components/Provider/WishlistProvider";
 import { cn } from "@/lib/utils";
-import { Heart, Loader2 } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
-import { useState, useTransition, useEffect, useMemo } from "react";
-import { toast } from "sonner";
 
 export default function ProductWishlistButton({ id, isFromWishlist }: { id: string | undefined, isFromWishlist?: boolean }) {
     const { user } = useAuth();

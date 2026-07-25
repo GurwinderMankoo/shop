@@ -1,19 +1,25 @@
-import { getCartItemsCount } from '@/lib/queries/getCart';
-import { ShoppingCart } from 'lucide-react'
+'use client'
+import { useEffect, useState } from 'react';
 import Link from 'next/link'
+import { ShoppingCart } from 'lucide-react'
 
-export default async function CartButton() {
+import { getCartCount } from '@/app/actions/getCart';
 
-    const cartItems = await getCartItemsCount() ?? 0;
+export default function CartButton() {
 
+    const [cartCount, setCartCount] = useState(0);
+
+    useEffect(() => {
+        getCartCount().then(setCartCount);
+    }, [])
 
     return (
         <button className="relative">
             <Link href="/cart">
                 <ShoppingCart className="h-5 w-5" />
             </Link>
-            {cartItems > 0 && <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-black text-xs text-white">
-                {cartItems}
+            {cartCount > 0 && <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-black text-xs text-white">
+                {cartCount}
             </span>}
         </button>
     )

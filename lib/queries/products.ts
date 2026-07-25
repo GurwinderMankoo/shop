@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../prisma";
-import { unstable_cache } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 
 
 type GetProductsParams = {
@@ -13,7 +13,11 @@ type GetProductsParams = {
     search?: string
 }
 
-async function getProductsImpl({ page = 1, limit = 10, category, sort, minPrice, maxPrice, search }: GetProductsParams) {
+export async function getProducts({ page = 1, limit = 10, category, sort, minPrice, maxPrice, search }: GetProductsParams) {
+    'use cache'
+
+    cacheLife("hours");
+    cacheTag("products");
     const skip = (page - 1) * limit;
     const where: Prisma.ProductWhereInput = {};
     if (category) {
@@ -135,7 +139,10 @@ async function getProductsImpl({ page = 1, limit = 10, category, sort, minPrice,
     };
 }
 
-async function getProductImpl(slug: string) {
+export async function getProduct(slug: string) {
+    'use cache'
+    cacheLife("hours");
+    cacheTag(`product-${slug}`);
     try {
         const product = await prisma.product.findUnique({
             where: {
@@ -194,23 +201,3 @@ async function getProductImpl(slug: string) {
         }
     }
 }
-
-export const getProducts = (params: GetProductsParams) =>
-    unstable_cache(
-        async () => getProductsImpl(params),
-        ['products', JSON.stringify(params)],
-        {
-            revalidate: 3600,
-            tags: ['products'],
-        }
-    )();
-
-export const getProduct = (slug: string) =>
-    unstable_cache(
-        async () => getProductImpl(slug),
-        ['product', slug], // 👈 Add `slug` here! Now every product has a unique cache key
-        {
-            revalidate: 3600,
-            tags: ['products', `product-${slug}`], // Pro-tip: tag individually for fine-grained revalidation
-        }
-    )();

@@ -1,10 +1,11 @@
-import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import { formatCurrency } from "@/lib/helper";
+
+import { Card, CardContent } from "@/components/ui/card";
+import StarRating from "@/components/reviews/StarRating";
 import DiscountBadge from "@/components/shared/DiscountBadge";
 import ProductWishlistButton from "./ProductWishlistButton";
 import ProductAddToCartButton from "./ProductAddToCartButton";
-import StarRating from "@/components/reviews/StarRating";
+import { formatCurrency } from "@/lib/helper";
 
 type ProductCardVariant = {
   id: string;
