@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
-import { Star, MessageSquare } from "lucide-react";
+import { Star, MessageSquare, Loader2 } from "lucide-react";
 
 import { Review } from "@/types/products";
 import { useAuth } from "@/components/Provider/AuthProvider";
@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import StarRating from "./StarRating";
 import ReviewCard from "./ReviewCard";
 import ReviewForm from "./ReviewForm";
-import { deleteReview } from "@/app/actions/reviews";
+import { deleteReview, getMyReview } from "@/app/actions/reviews";
 
 interface ProductReviewsProps {
     productId: string;
@@ -42,6 +42,24 @@ export default function ProductReviews({
     const [isDeletePending, startDeleteTransition] = useTransition();
     const [showReviewForm, setShowReviewForm] = useState(false);
     const [sortBy, setSortBy] = useState<"newest" | "highest" | "lowest">("newest");
+    const [myReview, setMyReview] = useState(existingUserReview);
+    const [isLoadingReview, setIsLoadingReview] = useState(false);
+
+    // Fetch user's review on the client if not provided server-side
+    useEffect(() => {
+        if (existingUserReview !== null || !user) {
+            return;
+        }
+
+        setIsLoadingReview(true);
+        getMyReview(productId).then((result) => {
+            if (result.success && result.data) {
+                setMyReview(result.data);
+            }
+        }).finally(() => {
+            setIsLoadingReview(false);
+        });
+    }, [productId, user, existingUserReview]);
 
     const handleDeleteReview = () => {
         if (!confirm("Are you sure you want to delete your review?")) return;
@@ -49,6 +67,7 @@ export default function ProductReviews({
         startDeleteTransition(async () => {
             const res = await deleteReview(productId, productSlug);
             if (res.success) {
+                setMyReview(null);
                 toast.success("Review deleted");
                 router.refresh();
             } else {
@@ -63,7 +82,7 @@ export default function ProductReviews({
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
 
-    const alreadyReviewed = !!existingUserReview;
+    const alreadyReviewed = !!myReview;
 
     return (
         <section className="mt-20">
@@ -101,11 +120,17 @@ export default function ProductReviews({
             {/* Review Form */}
             {(showReviewForm || alreadyReviewed) && user && (
                 <div className="mb-8">
-                    <ReviewForm
-                        productId={productId}
-                        productSlug={productSlug}
-                        existingReview={existingUserReview}
-                    />
+                    {isLoadingReview ? (
+                        <div className="flex items-center justify-center rounded-xl border bg-card p-6 shadow-sm">
+                            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                        </div>
+                    ) : (
+                        <ReviewForm
+                            productId={productId}
+                            productSlug={productSlug}
+                            existingReview={myReview}
+                        />
+                    )}
                     {alreadyReviewed && (
                         <div className="mt-3 flex items-center gap-3 text-sm text-muted-foreground">
                             <span>You have already reviewed this product.</span>

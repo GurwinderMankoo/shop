@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { SearchX } from "lucide-react";
+import { cacheLife, cacheTag } from "next/cache";
 
 import CustomPagination from "@/components/shared/CustomPagination";
 import PageLayout from "@/components/shared/PageLayout";
@@ -24,24 +25,57 @@ type ProductPageProps = {
 }
 
 export default async function ProductsPage({ searchParams }: ProductPageProps) {
-
   const params = await searchParams;
   const page = Number(params.page) || 1;
   const limit = 8;
-  const category = params.category;
-  const sort = params.sort;
-  const minPrice = params.minPrice ? Number(params.minPrice) : undefined;
-  const maxPrice = params.maxPrice ? Number(params.maxPrice) : undefined;
-  const search = params.q;
+  const category = params.category || null;
+  const sort = params.sort || null;
+  const minPrice = params.minPrice ? Number(params.minPrice) : null;
+  const maxPrice = params.maxPrice ? Number(params.maxPrice) : null;
+  const search = params.q || null;
+
+  return (
+    <CachedProductsPage
+      page={page}
+      limit={limit}
+      category={category}
+      sort={sort}
+      minPrice={minPrice}
+      maxPrice={maxPrice}
+      search={search}
+    />
+  );
+}
+
+async function CachedProductsPage({
+  page,
+  limit,
+  category,
+  sort,
+  minPrice,
+  maxPrice,
+  search,
+}: {
+  page: number;
+  limit: number;
+  category: string | null;
+  sort: string | null;
+  minPrice: number | null;
+  maxPrice: number | null;
+  search: string | null;
+}) {
+  'use cache'
+  cacheLife("hours");
+  cacheTag("products-page");
 
   const { products, pagination } = await getProducts({
     page,
     limit,
-    category,
-    sort,
-    minPrice,
-    maxPrice,
-    search
+    category: category ?? undefined,
+    sort: sort ?? undefined,
+    minPrice: minPrice ?? undefined,
+    maxPrice: maxPrice ?? undefined,
+    search: search ?? undefined,
   })
 
   return (

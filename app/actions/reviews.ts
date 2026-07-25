@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/queries/getCurrentUser";
+import { getUserReview } from "@/lib/queries/reviews";
 import { revalidatePath } from "next/cache";
 
 export async function createReview(formData: FormData) {
@@ -109,6 +110,10 @@ export async function createReview(formData: FormData) {
             data: null,
         };
     }
+}
+
+export async function getMyReview(productId: string) {
+    return getUserReview(productId);
 }
 
 export async function deleteReview(productId: string, productSlug?: string) {
