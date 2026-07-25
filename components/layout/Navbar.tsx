@@ -28,7 +28,7 @@ export default function Navbar() {
         <nav className="hidden items-center gap-8 lg:flex">
           <Link href="/products">Products</Link>
           <Link href="/categories">Categories</Link>
-          <Link href="/deals">Deals</Link>
+          {/* <Link href="/deals">Deals</Link> */}
           <Link href="/contact">Contact</Link>
         </nav>
 
