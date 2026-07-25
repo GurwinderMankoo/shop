@@ -83,7 +83,7 @@ export async function updateEmail(prevState: UpdateEmailState, formData: FormDat
             }
         }
     } catch (error) {
-        console.error(error)
+        // console.error(error)
         return {
             errors: {
                 pendingEmail: ["Something went wrong"]

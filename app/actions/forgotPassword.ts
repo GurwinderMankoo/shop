@@ -63,13 +63,13 @@ export async function forgotPassword(
         });
 
         if (error) {
-            console.error("Forgot password email error:", error);
+            // console.error("Forgot password email error:", error);
             return { success: false, error: "Failed to send email. Please try again." };
         }
 
         return { success: true, message: genericMessage };
     } catch (error) {
-        console.error("Forgot password error:", error);
+        // console.error("Forgot password error:", error);
         return { success: false, error: "Something went wrong. Please try again." };
     }
 }

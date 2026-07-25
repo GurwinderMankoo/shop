@@ -70,7 +70,7 @@ export async function resetPassword(
 
         return { success: true, message: "Password reset successfully. You can now sign in with your new password." };
     } catch (error) {
-        console.error("Reset password error:", error);
+        // console.error("Reset password error:", error);
         return { success: false, error: "Something went wrong. Please try again." };
     }
 }

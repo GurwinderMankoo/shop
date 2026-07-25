@@ -20,7 +20,6 @@ export default function WishlistProvider({ children }: { children: React.ReactNo
 
     useEffect(() => {
         getWishlist().then((ids) => {
-            console.log(ids)
             setWishlist(new Set(ids))
         })
     }, [user?.id])
