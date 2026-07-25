@@ -1,19 +1,32 @@
 {
-  "name": "The Shophub",
-  "short_name": "The Shophub",
+  "name": "TheShopHub - Discover Quality Products at Great Prices",
+  "short_name": "TheShopHub",
+  "description": "Shop electronics, fashion, home essentials, beauty products, and more at TheShopHub. Discover quality products with secure checkout and fast delivery.",
+  "start_url": "/",
+  "scope": "/",
+  "id": "/",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/android-chrome-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
   "theme_color": "#ffffff",
   "background_color": "#ffffff",
-  "display": "standalone"
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "lang": "en-US",
+  "categories": ["shopping", "lifestyle"],
+  "screenshots": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {}
 }

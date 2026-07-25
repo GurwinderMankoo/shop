@@ -1,17 +1,26 @@
+import { Suspense } from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { cacheLife, cacheTag } from "next/cache";
 import Headers from "@/components/shared/Headers";
 import { getProduct } from "@/lib/queries/products";
-import { getProductReviews, getProductReviewStats, getUserReview } from "@/lib/queries/reviews";
+import { getProductReviews, getProductReviewStats } from "@/lib/queries/reviews";
 import ProductGallery from "../_components/ProductGallery";
 import ProductDetails from "./_components/ProductDetails";
 import ProductReviews from "@/components/reviews/ProductReviews";
+import ProductJsonLd from "./_components/ProductJsonLd";
 import { notFound } from "next/navigation";
 
-
-export default async function ProductPage({ params }: { params: Promise<{ slug: string }>; }) {
+export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
+    return <CachedProductPage slug={slug} />;
+}
+
+async function CachedProductPage({ slug }: { slug: string }) {
+    'use cache'
+    cacheLife("hours");
+    cacheTag(`product-page-${slug}`);
 
     const { success, error, data: product } = await getProduct(slug);
 
@@ -19,113 +28,124 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         notFound();
     }
 
-    const [reviewsResult, reviewStatsResult, userReviewResult] = await Promise.all([
+    const [reviewsResult, reviewStatsResult] = await Promise.all([
         getProductReviews(product.id),
         getProductReviewStats(product.id),
-        getUserReview(product.id),
     ]);
 
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://theshophub.vercel.app";
+    const firstVariant = product.variants[0];
+
     return (
-        <div className="container mx-auto px-4 py-10">
-
-            <Headers name={product?.name} />
-
-            <div className="grid gap-10 lg:grid-cols-2">
-
-                {/* Gallery */}
-
-                <ProductGallery images={product?.images || []} />
-
-                {/* Product Info */}
-
-                <div>
-                    {product?.category?.name && <Badge className="mb-4">
-                        {product.category.name}
-                    </Badge>}
-
-                    <h1 className="text-4xl font-bold">
-                        {
-                            product?.name
-                        }
-                    </h1>
-
-                    <p className="mt-2 text-muted-foreground">
-                        {
-                            product?.description
-                        }
-                    </p>
-
-                    <ProductDetails product={product} />
-
-                    {/* Features */}
-
-                    <div className="mt-10 space-y-3">
-                        <div>✓ Free Shipping</div>
-                        <div>✓ 30-Day Returns</div>
-                        <div>✓ Secure Checkout</div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Description */}
-
-            <section className="mt-20">
-                <h2 className="text-2xl font-bold">
-                    Product Description
-                </h2>
-
-                <p className="mt-4 max-w-3xl text-muted-foreground">
-                    {product?.description}
-                </p>
-            </section>
-
-            {/* Reviews */}
-
-            <ProductReviews
-                productId={product.id}
-                productSlug={slug}
-                reviews={reviewsResult.data}
-                stats={reviewStatsResult.data}
-                existingUserReview={userReviewResult.data}
+        <>
+            <ProductJsonLd
+                product={product}
+                baseUrl={baseUrl}
+                reviewStats={reviewStatsResult.data}
+                firstVariantPrice={firstVariant?.price ?? 0}
             />
 
-            {/* Related Products */}
+            <div className="container mx-auto px-4 py-10">
 
-            <section className="mt-20">
-                <h2 className="mb-6 text-2xl font-bold">
-                    Related Products
-                </h2>
+                <Headers name={product?.name} />
 
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-10 lg:grid-cols-2">
 
-                    {[1, 2, 3, 4].map((item) => (
-                        <Card
-                            key={item}
-                            className="overflow-hidden"
-                        >
-                            <div className="relative aspect-square">
-                                <Image
-                                    src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e"
-                                    alt="Product"
-                                    fill
-                                    className="object-cover"
-                                />
-                            </div>
+                    {/* Gallery */}
 
-                            <div className="p-4">
-                                <h3 className="font-semibold">
-                                    Wireless Headphones
-                                </h3>
+                    <ProductGallery images={product?.images || []} />
 
-                                <p className="mt-2 text-lg font-bold">
-                                    ₹4,999
-                                </p>
-                            </div>
-                        </Card>
-                    ))}
+                    {/* Product Info */}
 
+                    <div>
+                        {product?.category?.name && <Badge className="mb-4">
+                            {product.category.name}
+                        </Badge>}
+
+                        <h1 className="text-4xl font-bold">
+                            {
+                                product?.name
+                            }
+                        </h1>
+
+                        <p className="mt-2 text-muted-foreground">
+                            {
+                                product?.description
+                            }
+                        </p>
+
+                        <ProductDetails product={product} />
+
+                        {/* Features */}
+
+                        <div className="mt-10 space-y-3">
+                            <div>✓ Free Shipping</div>
+                            <div>✓ 30-Day Returns</div>
+                            <div>✓ Secure Checkout</div>
+                        </div>
+                    </div>
                 </div>
-            </section>
-        </div>
+
+                {/* Description */}
+
+                <section className="mt-20">
+                    <h2 className="text-2xl font-bold">
+                        Product Description
+                    </h2>
+
+                    <p className="mt-4 max-w-3xl text-muted-foreground">
+                        {product?.description}
+                    </p>
+                </section>
+
+                {/* Reviews */}
+
+                <ProductReviews
+                    productId={product.id}
+                    productSlug={slug}
+                    reviews={reviewsResult.data}
+                    stats={reviewStatsResult.data}
+                    existingUserReview={null}
+                />
+
+                {/* Related Products */}
+
+                <section className="mt-20">
+                    <h2 className="mb-6 text-2xl font-bold">
+                        Related Products
+                    </h2>
+
+                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+
+                        {[1, 2, 3, 4].map((item) => (
+                            <Card
+                                key={item}
+                                className="overflow-hidden"
+                            >
+                                <div className="relative aspect-square">
+                                    <Image
+                                        src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e"
+                                        alt="Product"
+                                        fill
+                                        className="object-cover"
+                                    />
+                                </div>
+
+                                <div className="p-4">
+                                    <h3 className="font-semibold">
+                                        Wireless Headphones
+                                    </h3>
+
+                                    <p className="mt-2 text-lg font-bold">
+                                        ₹4,999
+                                    </p>
+                                </div>
+                            </Card>
+                        ))}
+
+                    </div>
+                </section>
+            </div>
+        </>
     );
 }
