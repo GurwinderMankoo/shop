@@ -1,14 +1,16 @@
 import { Suspense } from "react";
+import Link from "next/link";
+import { SearchX } from "lucide-react";
+
 import CustomPagination from "@/components/shared/CustomPagination";
 import PageLayout from "@/components/shared/PageLayout";
-import { getProducts } from "@/lib/queries/products";
-import Link from "next/link";
 import ProductFilters from "./_components/ProductFilters";
 import ProductsSearch from "./_components/ProductsSearch";
 import { ProductCard } from "./_components/ProductCard";
 import { Button } from "@/components/ui/button";
-import { SearchX } from "lucide-react";
 import MobileFilterWrapper from "./_components/MobileFilterWrapper";
+
+import { getProducts } from "@/lib/queries/products";
 
 type ProductPageProps = {
   searchParams: Promise<{

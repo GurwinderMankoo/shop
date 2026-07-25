@@ -1,6 +1,8 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTopLoader } from "nextjs-toploader";
+
 import {
     Pagination,
     PaginationContent,
@@ -9,7 +11,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useTopLoader } from "nextjs-toploader";
+import { useCallback } from "react";
 
 type Props = {
     currentPage: number;
@@ -23,16 +25,17 @@ export default function CustomPagination({ currentPage, totalPages }: Props) {
     const loader = useTopLoader();
 
 
-    const navigateTo = (page: number) => {
+    const navigateTo = useCallback((page: number) => {
         loader.start();
         const params = new URLSearchParams(
             searchParams.toString()
         );
 
         params.set("page", String(page));
+        loader.done();
 
         router.push(`/products?${params.toString()}`);
-    };
+    }, []);
 
     return (
         <Pagination>

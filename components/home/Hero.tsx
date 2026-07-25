@@ -1,6 +1,5 @@
 import { Truck, ShieldCheck, RotateCcw, Star, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { getCategories, wait } from "@/lib/queries/categories";
 import CategoriesMarque from "./CategoriesMarque";
 
 export async function HeroSection() {

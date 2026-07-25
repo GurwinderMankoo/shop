@@ -6,6 +6,7 @@ import { createSession } from "@/lib/queries/session";
 import { signinSchema } from "@/lib/validations/auth.schema";
 import { SigninFormState } from "@/types/signin.types";
 import bcrypt from "bcryptjs";
+import { updateTag } from "next/cache";
 
 export async function signin(prevState: SigninFormState, data: FormData): Promise<SigninFormState> {
 
@@ -96,6 +97,7 @@ export async function signin(prevState: SigninFormState, data: FormData): Promis
 
     await createSession(existingUser.id);
 
+    updateTag(`wishlist-${existingUser.id}`)
 
     return {
         success: true,

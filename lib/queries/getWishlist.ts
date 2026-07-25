@@ -1,50 +1,60 @@
 import { prisma } from "../prisma";
 import { getCurrentUser } from "./getCurrentUser";
-import { unstable_cache } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 
-export async function getCachedWishlist(userId: string) {
-    const getWishlist = unstable_cache(
-        async () => {
-            const wishlist = await prisma.wishlist.findMany({
-                where: {
-                    userId,
-                },
-                include: {
-                    product: {
-                        include: {
-                            category: true,
-                            images: true,
-                            variants: true,
-                        },
-                    },
-                },
-            });
+async function getCachedWishlist(userId: string) {
+    'use cache'
+    cacheLife("hours");
+    cacheTag(`wishlist-${userId}`);
 
-            return wishlist.map((item) => ({
-                ...item,
-                product: {
-                    ...item.product,
-                    minPrice: item.product.minPrice
-                        ? Number(item.product.minPrice)
-                        : null,
-                    variants: item.product.variants.map((variant) => ({
-                        ...variant,
-                        price: Number(variant.price),
-                        comparePrice: variant.comparePrice
-                            ? Number(variant.comparePrice)
-                            : null,
-                    })),
-                },
-            }));
+    const wishlist = await prisma.wishlist.findMany({
+        where: {
+            userId,
         },
-        ["wishlist", userId],
-        {
-            revalidate: 60,
-            tags: [`wishlist-${userId}`],
-        }
-    );
+        include: {
+            product: {
+                include: {
+                    category: true,
+                    images: true,
+                    variants: true,
+                },
+            },
+        },
+    });
 
-    return getWishlist();
+    return wishlist.map((item) => ({
+        ...item,
+        product: {
+            ...item.product,
+            minPrice: item.product.minPrice
+                ? Number(item.product.minPrice)
+                : null,
+            variants: item.product.variants.map((variant) => ({
+                ...variant,
+                price: Number(variant.price),
+                comparePrice: variant.comparePrice
+                    ? Number(variant.comparePrice)
+                    : null,
+            })),
+        },
+    }));
+}
+
+const getCachedWishlistIds = async (userId: string) => {
+    'use cache'
+    cacheLife("hours");
+    cacheTag(`wishlist-ids`);
+
+
+
+    return prisma.wishlist.findMany({
+        where: {
+            userId
+        },
+        select: {
+            productId: true
+        }
+    })
 }
 
 export async function getWishlist() {
@@ -53,29 +63,9 @@ export async function getWishlist() {
     if (!user) {
         return [];
     }
-    const userId = user?.id;
 
-    return getCachedWishlist(userId);
+    return getCachedWishlist(user.id);
 }
-
-const getCachedWishlistIds = (userId: string) =>
-    unstable_cache(
-        async () => {
-            return prisma.wishlist.findMany({
-                where: {
-                    userId
-                },
-                select: {
-                    productId: true
-                }
-            })
-        },
-        ['wishlist-ids', userId],
-        {
-            revalidate: 60,
-            tags: ['wishlist'],
-        }
-    )();
 
 export async function getWishlistProductIds() {
     const user = await getCurrentUser();

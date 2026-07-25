@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
+import NextTopLoader from "nextjs-toploader";
+import { Toaster } from "sonner";
+
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import AuthProvider from "@/components/Provider/AuthProvider";
-import { Toaster } from "sonner";
-import NextTopLoader from "nextjs-toploader";
 import WishlistProvider from "@/components/Provider/WishlistProvider";
+
+import "./globals.css";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -117,14 +120,16 @@ export default async function RootLayout({
           showSpinner={false}
           easing="ease"
         />
-        <AuthProvider>
-          <WishlistProvider>
-            <Navbar />
-            {children}
-            {modal}
-            <Footer />
-          </WishlistProvider>
-        </AuthProvider>
+        <Suspense fallback={null}>
+          <AuthProvider>
+            <WishlistProvider>
+              <Navbar />
+              {children}
+              {modal}
+              <Footer />
+            </WishlistProvider>
+          </AuthProvider>
+        </Suspense>
         <Toaster
           richColors
           position="top-right"

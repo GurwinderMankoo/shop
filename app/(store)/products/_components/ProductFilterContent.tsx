@@ -1,14 +1,16 @@
 "use client";
 
+import { useRouter, useSearchParams } from "next/navigation";
+import { SlidersHorizontal } from "lucide-react";
+import { useTopLoader } from "nextjs-toploader";
+
 import {
     RadioGroup,
     RadioGroupItem,
 } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { useRouter, useSearchParams } from "next/navigation";
-import { SlidersHorizontal } from "lucide-react";
-import { useTopLoader } from "nextjs-toploader";
+import { useCallback } from "react";
 
 
 const SORT_OPTIONS = [
@@ -48,7 +50,7 @@ export default function ProductFilterContent({
         searchParams.get("sort") ?? "";
 
 
-    const updateFilter = (
+    const updateFilter = useCallback((
         key: string,
         value: string
     ) => {
@@ -71,7 +73,8 @@ export default function ProductFilterContent({
         router.push(
             `/products?${params.toString()}`
         );
-    };
+        loader.done();
+    }, []);
 
 
     return (

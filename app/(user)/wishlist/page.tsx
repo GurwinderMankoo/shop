@@ -1,12 +1,13 @@
 import Headers from "@/components/shared/Headers";
 import PageLayout from "@/components/shared/PageLayout";
 import { EmptyWishlist } from "./_components/EmptyWishlist";
-import { getWishlist } from "@/lib/queries/getWishlist";
+// import { getWishlist } from "@/lib/queries/getWishlist";
+import { getWishlistAction } from "@/app/actions/getWishlist";
 import { ProductCard } from "@/app/(store)/products/_components/ProductCard";
 import Link from "next/link";
 
 export default async function page() {
-    let wishlist = await getWishlist();
+    let wishlist = await getWishlistAction();
 
     return (
         <PageLayout>
