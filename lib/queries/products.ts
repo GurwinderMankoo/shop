@@ -16,7 +16,7 @@ type GetProductsParams = {
 export async function getProducts({ page = 1, limit = 8, category, sort, minPrice, maxPrice, search }: GetProductsParams) {
     'use cache'
     cacheLife("hours");
-    cacheTag(`products-${page}-${limit}-${category}-${sort}-${minPrice}-${maxPrice}-${search}`);
+    cacheTag(`products-${page}-${limit}-${category}-${sort}-${minPrice}-${maxPrice}-${search}`, "reviews");
     const skip = (page - 1) * limit;
     const where: Prisma.ProductWhereInput = {};
     if (category) {

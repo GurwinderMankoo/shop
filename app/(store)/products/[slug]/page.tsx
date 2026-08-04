@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +12,9 @@ import ProductJsonLd from "./_components/ProductJsonLd";
 import { notFound } from "next/navigation";
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+    // Read the dynamic route param OUTSIDE the cached scope and pass the
+    // resolved slug in as a plain argument (the docs' preferred pattern —
+    // awaiting the params Promise inside 'use cache' is not cached / hangs).
     const { slug } = await params;
     return <CachedProductPage slug={slug} />;
 }

@@ -74,7 +74,7 @@ export default function ProductFilterContent({
             `/products?${params.toString()}`
         );
         loader.done();
-    }, []);
+    }, [searchParams]);
 
 
     return (
