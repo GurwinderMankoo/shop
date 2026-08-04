@@ -3,7 +3,7 @@ import { prisma } from "../prisma";
 
 
 export const getCategories = async (count?: number) => {
-    'use cache'
+    'use cache: remote'
     cacheLife("hours");
     cacheTag("categories");
     return await prisma.category.findMany({

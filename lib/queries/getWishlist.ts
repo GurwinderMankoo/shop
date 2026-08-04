@@ -3,7 +3,7 @@ import { getCurrentUser } from "./getCurrentUser";
 import { cacheLife, cacheTag } from "next/cache";
 
 async function getCachedWishlist(userId: string) {
-    'use cache'
+    'use cache: remote'
     cacheLife("hours");
     cacheTag(`wishlist-${userId}`);
 
@@ -41,9 +41,9 @@ async function getCachedWishlist(userId: string) {
 }
 
 const getCachedWishlistIds = async (userId: string) => {
-    'use cache'
+    'use cache: remote'
     cacheLife("hours");
-    cacheTag(`wishlist-ids`);
+    cacheTag(`wishlist`, `wishlist-${userId}`);
 
 
 
