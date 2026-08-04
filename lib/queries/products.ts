@@ -14,7 +14,7 @@ type GetProductsParams = {
 }
 
 export async function getProducts({ page = 1, limit = 8, category, sort, minPrice, maxPrice, search }: GetProductsParams) {
-    'use cache'
+    'use cache: remote'
     cacheLife("hours");
     cacheTag(`products-${page}-${limit}-${category}-${sort}-${minPrice}-${maxPrice}-${search}`, "reviews");
     const skip = (page - 1) * limit;
@@ -139,7 +139,7 @@ export async function getProducts({ page = 1, limit = 8, category, sort, minPric
 }
 
 export async function getProduct(slug: string) {
-    'use cache'
+    'use cache: remote'
     cacheLife("hours");
     cacheTag(`product-${slug}`);
     try {

@@ -10,17 +10,34 @@ import ProductDetails from "./_components/ProductDetails";
 import ProductReviews from "@/components/reviews/ProductReviews";
 import ProductJsonLd from "./_components/ProductJsonLd";
 import { notFound } from "next/navigation";
+import { prisma } from "@/lib/prisma";
+
+// Prerender every product page at build time so visits on serverless hosts
+// (Vercel) are served from the CDN instantly — no per-request render, no
+// loader. Slugs added later still render on demand (dynamicParams defaults
+// to true).
+export async function generateStaticParams() {
+    const products = await prisma.product.findMany({
+        select: {
+            slug: true,
+        },
+    });
+
+    return products.map((product) => ({
+        slug: product.slug,
+    }));
+}
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
     // Read the dynamic route param OUTSIDE the cached scope and pass the
     // resolved slug in as a plain argument (the docs' preferred pattern —
-    // awaiting the params Promise inside 'use cache' is not cached / hangs).
+    // awaiting the params Promise inside a cached scope is not cached / hangs).
     const { slug } = await params;
     return <CachedProductPage slug={slug} />;
 }
 
 async function CachedProductPage({ slug }: { slug: string }) {
-    'use cache'
+    'use cache: remote'
     cacheLife("hours");
     cacheTag(`product-page-${slug}`);
 

@@ -91,7 +91,7 @@ export async function createReview(formData: FormData) {
         });
 
         // Revalidate the product page using the slug. The page payload is
-        // cached with 'use cache' + cacheTag(`product-page-${slug}`), which
+        // cached with 'use cache: remote' + cacheTag(`product-page-${slug}`), which
         // revalidatePath does NOT invalidate — so updateTag is required.
         if (productSlug) {
             revalidatePath(`/products/${productSlug}`, "page");
@@ -139,7 +139,7 @@ export async function deleteReview(productId: string, productSlug?: string) {
         });
 
         // Revalidate the product page using the slug. The page payload is
-        // cached with 'use cache' + cacheTag(`product-page-${slug}`), which
+        // cached with 'use cache: remote' + cacheTag(`product-page-${slug}`), which
         // revalidatePath does NOT invalidate — so updateTag is required.
         if (productSlug) {
             revalidatePath(`/products/${productSlug}`, "page");
