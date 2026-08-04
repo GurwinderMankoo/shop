@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/queries/getCurrentUser";
 import { getUserReview } from "@/lib/queries/reviews";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 
 export async function createReview(formData: FormData) {
     // Get the slug from form data for cache revalidation
@@ -90,12 +90,16 @@ export async function createReview(formData: FormData) {
             },
         });
 
-        // Revalidate the product page using the slug
+        // Revalidate the product page using the slug. The page payload is
+        // cached with 'use cache' + cacheTag(`product-page-${slug}`), which
+        // revalidatePath does NOT invalidate — so updateTag is required.
         if (productSlug) {
-            revalidatePath(`/products/${productSlug}`);
+            revalidatePath(`/products/${productSlug}`, "page");
+            updateTag(`product-page-${productSlug}`);
         } else {
             revalidatePath("/products");
         }
+        updateTag("reviews");
 
         return {
             success: true,
@@ -134,12 +138,16 @@ export async function deleteReview(productId: string, productSlug?: string) {
             },
         });
 
-        // Revalidate the product page using the slug
+        // Revalidate the product page using the slug. The page payload is
+        // cached with 'use cache' + cacheTag(`product-page-${slug}`), which
+        // revalidatePath does NOT invalidate — so updateTag is required.
         if (productSlug) {
-            revalidatePath(`/products/${productSlug}`);
+            revalidatePath(`/products/${productSlug}`, "page");
+            updateTag(`product-page-${productSlug}`);
         } else {
             revalidatePath("/products");
         }
+        updateTag("reviews");
 
         return {
             success: true,
